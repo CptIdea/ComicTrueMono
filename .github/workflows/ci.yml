@@ -1,0 +1,38 @@
+# Build validation: rebuild the whole family from source on every push / PR
+# so a broken build or a bad box-glyphs.json is caught before it reaches a tag.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install FontForge
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fontforge
+
+      - name: Verify box-drawing geometry
+        run: python3 sources/tools/test_box.py
+
+      - name: Build the font family
+        run: fontforge -lang=py -script sources/build.py
+
+      - name: Check all 18 fonts were produced
+        run: |
+          count=$(ls fonts/ttf/ComicTrueMono-*.ttf | wc -l)
+          echo "Built $count TTF files"
+          test "$count" -eq 18
+
+      - name: Upload built fonts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ComicTrueMono-ttf
+          path: fonts/ttf/*.ttf

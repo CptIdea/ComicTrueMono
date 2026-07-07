@@ -46,6 +46,19 @@ make                              # build fonts + regenerate specimens
 - `make site` — regenerate the landing page `index.html`
 - `make clean` — remove build cache
 
+## Releases
+
+CI (GitHub Actions) rebuilds the whole family from source on every push and pull
+request. To cut a release, push a `v*` tag:
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This rebuilds the fonts, packages them into `ComicTrueMono-v1.0.0.zip`, and publishes
+a GitHub Release with the zip and the individual `.ttf` files attached.
+
 ## Repository layout
 
 ```

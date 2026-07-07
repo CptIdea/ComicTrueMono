@@ -14,6 +14,13 @@
 - Constructed in-project (absent from every available source): ø, Ø (diagonal built
   from the `|` glyph, with the font's rounded terminals), · (raised middle dot).
 - Reproducible build (`sources/build.py`) + specimen generators.
+
+### Fixed
+- Braille patterns (U+2800–28FF): scaled and centered onto the same line box the
+  block/box-drawing glyphs fill. Imported ShannsMono braille was baseline-anchored at
+  ~2/3 height, so it looked small and raised beside the full-height blocks; the dot grid
+  now sits at the line-box center with rows on an even 1/8..7/8 grid, so braille art
+  tiles cleanly and matches block size. Round dots preserved (uniform scale).
 - HTML specimens: showcase, weight/bold comparison, coverage grid, base-font comparison,
   community-harvest demo.
 

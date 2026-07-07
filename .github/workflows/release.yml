@@ -1,0 +1,76 @@
+# Release: on a v* tag, rebuild the family from source, package it into a zip,
+# and publish a GitHub Release with the zip and the individual TTF files attached.
+#
+#   git tag v1.0.0 && git push origin v1.0.0
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag/version to release (e.g. v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="${{ github.event.inputs.tag }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Releasing $tag"
+
+      - name: Install FontForge
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fontforge
+
+      - name: Verify box-drawing geometry
+        run: python3 sources/tools/test_box.py
+
+      - name: Build the font family
+        run: fontforge -lang=py -script sources/build.py
+
+      - name: Check all 18 fonts were produced
+        run: |
+          count=$(ls fonts/ttf/ComicTrueMono-*.ttf | wc -l)
+          echo "Built $count TTF files"
+          test "$count" -eq 18
+
+      - name: Package release zip
+        id: package
+        run: |
+          tag="${{ steps.version.outputs.tag }}"
+          dir="ComicTrueMono-${tag}"
+          zip="ComicTrueMono-${tag}.zip"
+          mkdir -p "dist/${dir}"
+          cp fonts/ttf/ComicTrueMono-*.ttf "dist/${dir}/"
+          cp LICENSE README.md "dist/${dir}/"
+          (cd dist && zip -r "../${zip}" "${dir}")
+          echo "zip=${zip}" >> "$GITHUB_OUTPUT"
+          ls -la "${zip}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${{ steps.version.outputs.tag }}"
+          gh release create "$tag" \
+            --title "Comic True Mono $tag" \
+            --generate-notes \
+            "${{ steps.package.outputs.zip }}" \
+            fonts/ttf/ComicTrueMono-*.ttf

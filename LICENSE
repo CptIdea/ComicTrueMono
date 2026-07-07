@@ -1,0 +1,61 @@
+MIT License
+
+Comic True Mono
+Modified work Copyright (c) 2026 Comic True Mono authors
+
+This font is a derivative work. Its glyph outlines and build pipeline are based
+on the following projects, ALL of which are distributed under the MIT License.
+Per the MIT License terms, the copyright and permission notices below are
+retained for every upstream whose outlines are included in this font.
+
+  Comic Shanns
+    Original work Copyright (c) 2018 Shannon Miwa
+    https://github.com/shannpersand/comic-shanns   (MIT)
+    — root source of the letterforms; Latin, accented Latin (Latin-1 Supplement,
+      Latin Extended-A/B), punctuation, arrows, currency, math operators.
+
+  Comic Mono
+    Modified work Copyright (c) 2019 dtinth
+    https://github.com/dtinth/comic-mono-font       (MIT)
+    — monospace base (Regular/Bold), advance width 1116 @ UPM 2048.
+
+  Serious Shanns
+    Modified work Copyright (c) 2023-2024 Kyle Beechly
+    https://github.com/kaBeech/serious-shanns        (MIT)
+    — source of the lambda glyph and the hand-drawn Italic / Bold Italic masters.
+
+  comic-shanns (fork by clsn)
+    https://github.com/clsn/comic-shanns             (MIT)
+    — additional characters: Æ æ Œ œ Þ þ ſ ƿ Ƿ ꝛ ∀ ∃ ∄.
+
+  comic-shanns (fork by lilmayu)
+    https://github.com/lilmayu/comic-shanns          (MIT)
+    — corrected caron/háček diacritics: Č č Ď Ě ě Ň ň Ř ř Š š Ť Ž ž and U+02C7.
+
+--------------------------------------------------------------------------------
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+Note on the demos: the HTML specimens in fonts/*.html reference JetBrains Mono
+(fonts/fallback/) purely as a Cyrillic fallback for preview. JetBrains Mono is
+licensed under the SIL Open Font License 1.1 and is NOT embedded into any
+Comic True Mono output file — it is only used for on-screen preview. If the
+demos are redistributed with that file, include its OFL license.

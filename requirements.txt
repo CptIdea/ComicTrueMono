@@ -1,0 +1,4 @@
+# Python dependencies for the build tools and specimen generators.
+# NOTE: FontForge itself is a system dependency (install via your OS package manager,
+# e.g. `brew install fontforge`); the build script runs under FontForge's bundled Python.
+fonttools>=4.0

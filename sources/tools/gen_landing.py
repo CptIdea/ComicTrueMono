@@ -128,7 +128,7 @@ CHART_SRC = [
 ]
 crows = [(name, who, cmap_count(f), False) for name, who, f in CHART_SRC]
 crows = [r for r in crows if r[2]]                       # drop any that failed to load
-crows.append(("Comic True Mono", "assembled here — this font", TOTAL, True))
+crows.append(("Comic True Mono", "assembled here", TOTAL, True))
 crows.sort(key=lambda r: r[2])                           # ascending: build up to the winner
 CMAX = max(r[2] for r in crows)
 CHART = ""
@@ -139,8 +139,8 @@ for name, who, cnt, win in crows:
     tag = '<span class="ctag">★ richest free set</span>' if win else ""
     CHART += (f'<div class="crow"><div class="clab"><b>{html.escape(name)}</b>'
               f'<span>{html.escape(who)}</span></div>'
-              f'<div class="ctrack"><div class="{barcls}" data-pct="{pct}" style="width:0"></div></div>'
-              f'<div class="cend"><span class="{numcls}" data-n="{cnt}">0</span>{tag}</div></div>')
+              f'<div class="ctrack"><div class="{barcls}" data-pct="{pct}" style="width:0"></div>{tag}</div>'
+              f'<span class="{numcls}" data-n="{cnt}">0</span></div>')
 
 TPL = r"""<!doctype html>
 <html lang="en">
@@ -266,7 +266,8 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .chart{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:18px 22px 12px;overflow:hidden;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:34px 34px}
-.crow{display:grid;grid-template-columns:minmax(112px,178px) 1fr auto;gap:14px;align-items:center;
+/* fixed columns so every row's bar track is identical width — bars stay comparable */
+.crow{display:grid;grid-template-columns:172px 1fr 3.5ch;gap:14px;align-items:center;
   padding:9px 0;border-bottom:1px solid var(--line)}
 .crow:last-child{border-bottom:0}
 .clab b{display:block;font-size:14px;font-weight:700;letter-spacing:-.01em}
@@ -279,17 +280,19 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .cbar.win{background:var(--accent);
   background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 1ch,transparent 1ch 2ch);
   box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 32%,transparent)}
-.cend{display:flex;align-items:center;justify-content:flex-end}
-.cnum{font-family:CTM;font-weight:700;font-size:15px;min-width:3ch;text-align:right}
+.cnum{font-family:CTM;font-weight:700;font-size:15px;text-align:right}
 .cnum.win{color:var(--accent)}
-.ctag{font-family:CTM;font-size:10px;color:#fff;background:var(--accent);
-  border-radius:999px;padding:2px 8px;margin-left:9px;white-space:nowrap}
+/* the ★ badge rides on the bar (absolute) so it never steals width from any track */
+.ctag{position:absolute;top:50%;right:9px;transform:translateY(-50%);
+  font-family:CTM;font-size:10px;color:#fff;background:rgba(0,0,0,.32);
+  border-radius:999px;padding:2px 8px;white-space:nowrap;pointer-events:none}
 .ccap{color:var(--mut);font-size:12.5px;margin:14px 2px 0;max-width:66ch}
 .ccap .mono{font-size:12px;color:var(--fg)}
 @media (max-width:560px){
-  .crow{grid-template-columns:minmax(88px,1fr) 1.4fr auto;gap:10px}
+  .crow{grid-template-columns:104px 1fr 3.5ch;gap:10px}
   .clab b{font-size:12.5px}
-  .ctag{display:none}
+  .clab span{font-size:10px}
+  .ctag{font-size:9px;padding:2px 6px;right:6px}
 }
 
 /* install */

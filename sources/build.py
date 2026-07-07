@@ -222,6 +222,29 @@ braille = [cp for cp in range(0x2800, 0x2900) if cp in sm_cps]   # Braille Patte
 for cp in braille:
     paste_grid(master, sm, cp)
 
+# Align the Braille dot-grid to the same line box the block/box glyphs fill.
+# ShannsMono's braille is baseline-anchored at ~2/3 height, so next to the
+# full-height blocks/box-drawing it looks small and raised. Map the 4 dot rows
+# onto 1/8..7/8 of the block line box (BB..BT below) and center the field in the
+# cell: braille art now tiles vertically on an even grid and matches block size.
+# Uniform scale (same factor on x and y) keeps the dots round; a single shared
+# transform on all 256 patterns preserves the grid.
+LINE_BB, LINE_BT = -512.0, 1536.0          # == block line box (BB, BT) defined below
+def _dot_center(cp):
+    x0, y0, x1, y1 = master[cp].boundingBox()
+    return (x0 + x1) / 2.0, (y0 + y1) / 2.0
+_tx, _ty = _dot_center(0x2801)             # top row, left column
+_bx, _by = _dot_center(0x2840)             # bottom row (dot 7), left column
+_rx, _ry = _dot_center(0x2808)             # top row, right column
+src_cx, src_cy = (_tx + _rx) / 2.0, (_ty + _by) / 2.0
+s = ((LINE_BT - LINE_BB) * 6.0 / 8.0) / (_ty - _by)   # row span -> 1/8..7/8 of line box
+tgt_cx, tgt_cy = CELL / 2.0, (LINE_BB + LINE_BT) / 2.0
+BR_T = psMat.compose(psMat.translate(-src_cx, -src_cy),
+        psMat.compose(psMat.scale(s, s), psMat.translate(tgt_cx, tgt_cy)))
+for cp in braille:
+    master[cp].transform(BR_T)
+    master[cp].width = CELL
+
 # ---- Box drawing + block elements ----
 # Straight, connecting parts are clean rectangles (tile seamlessly, no rounded/slanted
 # seams); rounded corners ╭╮╰╯ keep a Comic arc. Per-side weight model: each of the four

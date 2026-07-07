@@ -12,7 +12,7 @@ Pipeline (everything auto-derived from one master):
   3. Italic of every weight = 12.7 deg slant (same angle as kaBeech; the auto-italic is good).
   4. Advance width normalized to 1116 everywhere -> strict monospacing.
 """
-import fontforge, psMat, math, os
+import fontforge, psMat, math, os, json
 
 # Paths are derived from the script location: sources/build.py -> repo root.
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -70,8 +70,8 @@ def recenter(g):
 
 def refit_all(font):
     for g in font.glyphs():
-        if g.unicode and 0x2800 <= g.unicode <= 0x28FF:
-            g.width = CELL          # Braille: preserve the dot grid — normalize advance only
+        if g.unicode and (0x2800 <= g.unicode <= 0x28FF or 0x2500 <= g.unicode <= 0x257F):
+            g.width = CELL          # grid glyphs (Braille, box): keep position, normalize advance
         else:
             recenter(g)
 
@@ -132,18 +132,34 @@ def paste_glyph(dst, src, cp, scale=1.0):
         g.transform(psMat.scale(scale, scale))   # scale about baseline; recenter fixes x
     recenter(g)
 
-# Grid glyphs (Braille): keep the dot grid in place — uniform scale, NO recenter.
-# Map ShannsMono's braille cell (549 @ em1000, i.e. 549*EM/1000 after our em change) to CELL.
-GRID_SCALE = CELL / (549 * (EM / 1000.0))
-
-def paste_grid(dst, src, cp):
+# Grid glyphs (Braille, box-drawing): keep the design cell in place — uniform scale,
+# NO recenter. Map ShannsMono's cell (src_cell @ em1000) exactly to CELL so lines tile.
+def paste_grid(dst, src, cp, src_cell=549):
     src.selection.select(("unicode", None), cp)
     src.copy()
     dst.createChar(cp)
     dst.selection.select(("unicode", None), cp)
     dst.paste()
     g = dst[cp]
-    g.transform(psMat.scale(GRID_SCALE, GRID_SCALE))
+    g.transform(psMat.scale(CELL / (src_cell * (EM / 1000.0)),
+                            CELL / (src_cell * (EM / 1000.0))))
+    g.width = CELL
+    return g
+
+def add_rect(g, x0, y0, x1, y1):
+    p = g.glyphPen(replace=False)
+    p.moveTo((x0, y0)); p.lineTo((x1, y0)); p.lineTo((x1, y1)); p.lineTo((x0, y1)); p.closePath()
+
+def make_junction(font, cp, line_cps, rects):
+    """Build a box-drawing junction: copy full line glyphs + add stub rectangles,
+    positioned on the exact stroke bands of the imported lines so everything tiles."""
+    g = font.createChar(cp)
+    for lc in line_cps:
+        font.selection.select(("unicode", None), lc); font.copy()
+        font.selection.select(("unicode", None), cp); font.pasteInto()
+    for r in rects:
+        add_rect(g, *r)
+    g.correctDirection(); g.removeOverlap(); g.correctDirection()
     g.width = CELL
     return g
 
@@ -201,11 +217,92 @@ for cp in (0x0141, 0x0142):     # L-stroke / l-stroke from Serious Shanns (MIT)
 slash_through(master, 0x006F, 0x00F8, "oslash")   # o-slash
 slash_through(master, 0x004F, 0x00D8, "Oslash")   # O-slash
 raised_dot(master)                                 # middle dot
-braille = [cp for cp in range(0x2800, 0x2900)      # Braille Patterns (256), grid glyphs
-           if cp in {g.unicode for g in sm.glyphs() if g.unicode and g.unicode > 0}]
+sm_cps = {g.unicode for g in sm.glyphs() if g.unicode and g.unicode > 0}
+braille = [cp for cp in range(0x2800, 0x2900) if cp in sm_cps]   # Braille Patterns (256)
 for cp in braille:
     paste_grid(master, sm, cp)
-print(f"   added: {len(want)} by range + 14 lilmayu + lambda + L-stroke + o/O-slash, middot + {len(braille)} braille")
+
+# ---- Box drawing + block elements ----
+# Straight, connecting parts are clean rectangles (tile seamlessly, no rounded/slanted
+# seams); rounded corners ╭╮╰╯ keep a Comic arc. Per-side weight model: each of the four
+# sides carries a weight 0/1/2/3 = none/light/heavy/double.
+T1, T2 = 150, 300              # light / heavy stroke
+DBW, DBG = 92, 150            # double line: bar thickness, gap from center to each bar
+YC, XC = 546.0, CELL/2.0
+YB, YT = YC-1600, YC+1600     # vertical tiling extent (overshoot)
+XL, XR = 0.0, CELL
+CO = 0                        # arms reach exactly to center — no overshoot past a crossing line
+BB, BT = -512.0, 1536.0       # block-element cell bottom/top (~ one line box)
+
+# ---- Box-drawing lines U+2500-2570: precomputed with shapely in sources/tools/gen_box.py
+# -> box-glyphs.json (verified by sources/tools/test_box.py). Here we only stroke the
+# contours; correctDirection() sets winding so hollow doubles cut correctly. Blocks / shades
+# / diagonals are still constructed directly below.
+_BOXJSON = json.load(open(ROOT + "/sources/tools/box-glyphs.json"))
+for _cp, _polys in _BOXJSON.items():
+    _g = master.createChar(int(_cp))
+    _pen = _g.glyphPen()                     # replace=True -> starts empty
+    for _poly in _polys:
+        for _ring in _poly:
+            _pts = []                            # drop consecutive dup points (int rounding can
+            for _pt in _ring:                    # collapse neighbours -> zero-length segments)
+                if not _pts or _pts[-1] != _pt:
+                    _pts.append(_pt)
+            if len(_pts) > 1 and _pts[0] == _pts[-1]:
+                _pts.pop()
+            if len(_pts) < 3:
+                continue
+            _pen.moveTo(tuple(_pts[0]))
+            for _pt in _pts[1:]:
+                _pen.lineTo(tuple(_pt))
+            _pen.closePath()
+    _pen = None                              # flush the pen
+    _g.correctDirection()                    # winding by nesting -> holes cut correctly
+    _g.width = CELL
+
+# shades ░ ▒ ▓ — dithered grids of small squares
+def shade(cp, keep):
+    g = master.createChar(cp); cols, rows = 8, 14
+    cw = (XR-XL)/cols; ch = (BT-BB)/rows
+    for j in range(rows):
+        for i in range(cols):
+            if keep(i, j):
+                add_rect(g, XL+i*cw, BB+j*ch, XL+i*cw+cw*0.6, BB+j*ch+ch*0.6)
+    g.removeOverlap(); g.correctDirection(); g.width = CELL
+shade(0x2591, lambda i,j: i%2==0 and j%2==0)          # ░ ~25%
+shade(0x2592, lambda i,j: (i+j)%2==0)                 # ▒ ~50%
+shade(0x2593, lambda i,j: not (i%2 and j%2))          # ▓ ~75%
+
+# diagonals ╱ ╲ ╳
+def diagonal(cp, up, down):
+    g = master.createChar(cp); w = T1*0.85
+    def bar(x0,y0,x1,y1):
+        import math as _mm; dx,dy=x1-x0,y1-y0; L=_mm.hypot(dx,dy); nx,ny=-dy/L*w/2,dx/L*w/2
+        p=g.glyphPen(replace=True) if False else g.glyphPen(replace=False)
+        p.moveTo((x0+nx,y0+ny)); p.lineTo((x1+nx,y1+ny)); p.lineTo((x1-nx,y1-ny)); p.lineTo((x0-nx,y0-ny)); p.closePath()
+    if up:   bar(XL,YB,XR,YT)     # ╱ bottom-left..top-right
+    if down: bar(XL,YT,XR,YB)     # ╲ top-left..bottom-right
+    g.removeOverlap(); g.correctDirection(); g.width = CELL
+diagonal(0x2571,True,False); diagonal(0x2572,False,True); diagonal(0x2573,True,True)
+
+# block elements (fractions of the cell); tile edge-to-edge
+def block(cp, x0f, y0f, x1f, y1f):
+    g = master.createChar(cp)
+    add_rect(g, XL+(XR-XL)*x0f, BB+(BT-BB)*y0f, XL+(XR-XL)*x1f, BB+(BT-BB)*y1f)
+    g.correctDirection(); g.width = CELL
+block(0x2588,0,0,1,1)                # █ full
+block(0x2580,0,0.5,1,1)              # ▀ upper half
+block(0x2590,0.5,0,1,1)              # ▐ right half
+block(0x2594,0,7/8,1,1)              # ▔ upper 1/8
+block(0x2595,7/8,0,1,1)              # ▕ right 1/8
+for i,cp in enumerate([0x2581,0x2582,0x2583,0x2584,0x2585,0x2586,0x2587], start=1):
+    block(cp, 0,0,1,i/8)             # ▁▂▃▄▅▆▇ lower eighths (▄ = lower half)
+for i,cp in enumerate([0x258F,0x258E,0x258D,0x258C,0x258B,0x258A,0x2589], start=1):
+    block(cp, 0,0,i/8,1)             # ▏▎▍▌▋▊▉ left eighths (▌ = left half)
+
+nbox = len(_BOXJSON) + 3 + 19
+print(f"   added: {len(want)} range + 14 lilmayu + lambda + L-stroke + o/O-slash, middot"
+      f" + {len(braille)} braille + box/blocks (light+heavy+double+rounded+diagonals+blocks)")
 for s in (mc, lm, gv, sr, sm): s.close()
 BUILDTMP = ROOT + "/sources/.cache"; os.makedirs(BUILDTMP, exist_ok=True)
 MASTER_PATH = BUILDTMP + "/_master-Regular.ttf"

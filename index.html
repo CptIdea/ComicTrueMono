@@ -118,6 +118,9 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .artctrl input[type=range]{accent-color:var(--accent)}
 .artwrap{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow-x:auto;padding:14px;margin-bottom:12px}
 .art{font-family:CTM;font-weight:700;white-space:pre;margin:0;font-size:var(--artfs,8px);line-height:1;color:var(--fg)}
+.boxwrap{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow-x:auto;padding:26px 22px}
+.boxtbl{font-family:CTM;white-space:pre;margin:0;color:var(--fg);letter-spacing:0;
+  font-size:clamp(13px,2.7vw,23px);line-height:1.1;display:inline-block;min-width:min-content}
 
 
 /* provenance */
@@ -159,6 +162,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#weights">Weights</a>
     <a class="lnk" href="#glyphs">Glyphs</a>
     <a class="lnk" href="#art">Art</a>
+    <a class="lnk" href="#boxdraw">Box</a>
     <a class="lnk" href="#story">Story</a>
     <a class="lnk" href="#get">Get it</a>
     <button id="theme" title="Toggle theme">◐</button>
@@ -178,7 +182,7 @@ footer a{color:var(--accent);text-decoration:none}
       <span class="pill mono">9 weights × italic</span>
     </div>
     <div class="stats mono">
-      <div class="stat"><b>590</b><span>glyphs</span></div>
+      <div class="stat"><b>716</b><span>glyphs</span></div>
       <div class="stat"><b>9×2</b><span>weights + italic</span></div>
       <div class="stat"><b>1116</b><span>mono advance</span></div>
       <div class="stat"><b>100%</b><span>MIT</span></div>
@@ -221,12 +225,12 @@ footer a{color:var(--accent);text-decoration:none}
 <section id="glyphs">
   <div class="wrap reveal">
     <div class="cvhead">
-      <div><p class="eyebrow">Coverage</p><h2 style="margin:0">590 glyphs, one width.</h2></div>
+      <div><p class="eyebrow">Coverage</p><h2 style="margin:0">716 glyphs, one width.</h2></div>
       <label class="note mono">size <input id="cvs" type="range" min="18" max="44" value="26" style="accent-color:var(--accent)"></label>
     </div>
     <p class="lead">Full European Latin, symbols, currency, arrows, math — laid over a one-cell grid.
       Every glyph fills exactly one column: that is what monospaced means.</p>
-    <div class="cvblk"><div class="cvhdr">Basic Latin<span>95</span></div><div class="cvglyphs"> !&quot;#$%&amp;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</div></div><div class="cvblk"><div class="cvhdr">Latin-1 Supplement<span>79</span></div><div class="cvglyphs">¡¢£¤¥¦¨«¬¯°±´·¸»¼¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖ×ØÙÚÛÜÝÞàáâãäåæçèéêëìíîïñòóôõö÷øùúûüýþÿ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-A<span>110</span></div><div class="cvglyphs">ĀāĂăĄąĆćĈĉĊċČčĎďĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĨĩĪīĬĭĮįİıĴĵĶķĹĺĻļŁłŃńŅņŇňŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-B<span>7</span></div><div class="cvglyphs">ƿǷȘșȚțȷ</div></div><div class="cvblk"><div class="cvhdr">Other<span>272</span></div><div class="cvglyphs">ˆˇ˘˙˚˛˜˝ẀẁẂẃẄẅỲỳ⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿⡀⡁⡂⡃⡄⡅⡆⡇⡈⡉⡊⡋⡌⡍⡎⡏⡐⡑⡒⡓⡔⡕⡖⡗⡘⡙⡚⡛⡜⡝⡞⡟⡠⡡⡢⡣⡤⡥⡦⡧⡨⡩⡪⡫⡬⡭⡮⡯⡰⡱⡲⡳⡴⡵⡶⡷⡸⡹⡺⡻⡼⡽⡾⡿⢀⢁⢂⢃⢄⢅⢆⢇⢈⢉⢊⢋⢌⢍⢎⢏⢐⢑⢒⢓⢔⢕⢖⢗⢘⢙⢚⢛⢜⢝⢞⢟⢠⢡⢢⢣⢤⢥⢦⢧⢨⢩⢪⢫⢬⢭⢮⢯⢰⢱⢲⢳⢴⢵⢶⢷⢸⢹⢺⢻⢼⢽⢾⢿⣀⣁⣂⣃⣄⣅⣆⣇⣈⣉⣊⣋⣌⣍⣎⣏⣐⣑⣒⣓⣔⣕⣖⣗⣘⣙⣚⣛⣜⣝⣞⣟⣠⣡⣢⣣⣤⣥⣦⣧⣨⣩⣪⣫⣬⣭⣮⣯⣰⣱⣲⣳⣴⣵⣶⣷⣸⣹⣺⣻⣼⣽⣾⣿</div></div><div class="cvblk"><div class="cvhdr">Greek<span>1</span></div><div class="cvglyphs">λ</div></div><div class="cvblk"><div class="cvhdr">Punctuation<span>14</span></div><div class="cvglyphs">–—‘’‚“”†‡•…‹›⁄</div></div><div class="cvblk"><div class="cvhdr">Currency<span>1</span></div><div class="cvglyphs">€</div></div><div class="cvblk"><div class="cvhdr">Arrows<span>4</span></div><div class="cvglyphs">←↑→↓</div></div><div class="cvblk"><div class="cvhdr">Math<span>6</span></div><div class="cvglyphs">∀∃∄−≤≥</div></div><div class="cvblk"><div class="cvhdr">Latin Ext-D<span>1</span></div><div class="cvglyphs">ꝛ</div></div>
+    <div class="cvblk"><div class="cvhdr">Basic Latin<span>95</span></div><div class="cvglyphs"> !&quot;#$%&amp;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</div></div><div class="cvblk"><div class="cvhdr">Latin-1 Supplement<span>79</span></div><div class="cvglyphs">¡¢£¤¥¦¨«¬¯°±´·¸»¼¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖ×ØÙÚÛÜÝÞàáâãäåæçèéêëìíîïñòóôõö÷øùúûüýþÿ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-A<span>110</span></div><div class="cvglyphs">ĀāĂăĄąĆćĈĉĊċČčĎďĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĨĩĪīĬĭĮįİıĴĵĶķĹĺĻļŁłŃńŅņŇňŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-B<span>7</span></div><div class="cvglyphs">ƿǷȘșȚțȷ</div></div><div class="cvblk"><div class="cvhdr">Other<span>398</span></div><div class="cvglyphs">ˆˇ˘˙˚˛˜˝ẀẁẂẃẄẅỲỳ─━│┃┌┍┎┏┐┑┒┓└┕┖┗┘┙┚┛├┝┞┟┠┡┢┣┤┥┦┧┨┩┪┫┬┭┮┯┰┱┲┳┴┵┶┷┸┹┺┻┼┽┾┿╀╁╂╃╄╅╆╇╈╉╊╋═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬╭╮╯╰╱╲╳▀▁▂▃▄▅▆▇█▉▊▋▌▍▎▏▐░▒▓▔▕⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿⡀⡁⡂⡃⡄⡅⡆⡇⡈⡉⡊⡋⡌⡍⡎⡏⡐⡑⡒⡓⡔⡕⡖⡗⡘⡙⡚⡛⡜⡝⡞⡟⡠⡡⡢⡣⡤⡥⡦⡧⡨⡩⡪⡫⡬⡭⡮⡯⡰⡱⡲⡳⡴⡵⡶⡷⡸⡹⡺⡻⡼⡽⡾⡿⢀⢁⢂⢃⢄⢅⢆⢇⢈⢉⢊⢋⢌⢍⢎⢏⢐⢑⢒⢓⢔⢕⢖⢗⢘⢙⢚⢛⢜⢝⢞⢟⢠⢡⢢⢣⢤⢥⢦⢧⢨⢩⢪⢫⢬⢭⢮⢯⢰⢱⢲⢳⢴⢵⢶⢷⢸⢹⢺⢻⢼⢽⢾⢿⣀⣁⣂⣃⣄⣅⣆⣇⣈⣉⣊⣋⣌⣍⣎⣏⣐⣑⣒⣓⣔⣕⣖⣗⣘⣙⣚⣛⣜⣝⣞⣟⣠⣡⣢⣣⣤⣥⣦⣧⣨⣩⣪⣫⣬⣭⣮⣯⣰⣱⣲⣳⣴⣵⣶⣷⣸⣹⣺⣻⣼⣽⣾⣿</div></div><div class="cvblk"><div class="cvhdr">Greek<span>1</span></div><div class="cvglyphs">λ</div></div><div class="cvblk"><div class="cvhdr">Punctuation<span>14</span></div><div class="cvglyphs">–—‘’‚“”†‡•…‹›⁄</div></div><div class="cvblk"><div class="cvhdr">Currency<span>1</span></div><div class="cvglyphs">€</div></div><div class="cvblk"><div class="cvhdr">Arrows<span>4</span></div><div class="cvglyphs">←↑→↓</div></div><div class="cvblk"><div class="cvhdr">Math<span>6</span></div><div class="cvglyphs">∀∃∄−≤≥</div></div><div class="cvblk"><div class="cvhdr">Latin Ext-D<span>1</span></div><div class="cvglyphs">ꝛ</div></div>
   </div>
 </section>
 
@@ -286,6 +290,25 @@ footer a{color:var(--accent);text-decoration:none}
                /oo\X/oooo..ooooooooooooooooooo..oooooooooooo
              /ooooooo..ooooo..oooooooooooooo.....ooooooooo...
            /ooooo...ooooo.....oooooooooooo.......ooooooo.....o</pre></div>
+  </div>
+</section>
+
+<section id="boxdraw">
+  <div class="wrap reveal">
+    <p class="eyebrow">Box drawing</p>
+    <h2>Tables that actually line up.</h2>
+    <p class="lead">A full, self-drawn box set — light, heavy, double and rounded — with every corner
+      <i>and</i> junction softly rounded in the Comic style, and woven double joints. Mixed
+      single/double borders with different column widths tile seamlessly, so real tables just work.</p>
+    <div class="boxwrap"><pre class="boxtbl" id="boxtbl">╔═════════════╤════════╤════════════════════════╗
+║ Script      │ Glyphs │ Sample                 ║
+╠═════════════╪════════╪════════════════════════╣
+║ Latin       │ 229    │ Ærø · Œuvre · Žižkov   ║
+║ Box draw    │ 101    │ ┌┬┐ ╔╦╗ ┣╋┫ ╭─╮        ║
+║ Braille     │ 256    │ ⠺⠕⠧⠑⠝ ⠃⠕⠭ ⠞⠽⠏⠑         ║
+╟─────────────┼────────┼────────────────────────╢
+║ Math        │ —      │ ∀x∃y  x≤y  ± × ÷ →     ║
+╚═════════════╧════════╧════════════════════════╝</pre></div>
   </div>
 </section>
 

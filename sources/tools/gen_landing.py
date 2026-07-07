@@ -81,6 +81,28 @@ _b, _a = _art.split("===ASCII===")
 ARTB = html.escape(_b.strip("\n"))
 ARTA = html.escape(_a.strip("\n"))
 
+# ---- box-drawing specimen: a complex table (varied column widths, real text) ----
+def _box_table():
+    W = (13, 8, 24)                                   # inner width of each column
+    def rule(l, mid, fill, r):
+        return l + mid.join(fill * w for w in W) + r
+    def row(cells):
+        return "║" + "│".join(" " + c + " " * (w - 1 - len(c))
+                                        for c, w in zip(cells, W)) + "║"
+    lines = [
+        rule("╔", "╤", "═", "╗"),        # ╔══╤══╗  double frame, single columns
+        row(("Script", "Glyphs", "Sample")),
+        rule("╠", "╪", "═", "╣"),        # ╠══╪══╣  double header rule crossing cols
+        row(("Latin", "229", "Ærø · Œuvre · Žižkov")),
+        row(("Box draw", "101", "┌┬┐ ╔╦╗ ┣╋┫ ╭─╮")),
+        row(("Braille", "256", "⠺⠕⠧⠑⠝ ⠃⠕⠭ ⠞⠽⠏⠑")),
+        rule("╟", "┼", "─", "╢"),        # ╟──┼──╢  single mid rule, double frame
+        row(("Math", "—", "∀x∃y  x≤y  ± × ÷ →")),
+        rule("╚", "╧", "═", "╝"),        # ╚══╧══╝
+    ]
+    return "\n".join(lines)
+BOXTABLE = html.escape(_box_table())
+
 HERO_LETTERS = "".join(
     f'<span class="hl" style="--i:{i}">{html.escape(ch)}</span>' if ch != " " else '<span class="hsp"> </span>'
     for i, ch in enumerate("Comic True Mono"))
@@ -190,6 +212,9 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .artctrl input[type=range]{accent-color:var(--accent)}
 .artwrap{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow-x:auto;padding:14px;margin-bottom:12px}
 .art{font-family:CTM;font-weight:700;white-space:pre;margin:0;font-size:var(--artfs,8px);line-height:1;color:var(--fg)}
+.boxwrap{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow-x:auto;padding:26px 22px}
+.boxtbl{font-family:CTM;white-space:pre;margin:0;color:var(--fg);letter-spacing:0;
+  font-size:clamp(13px,2.7vw,23px);line-height:1.1;display:inline-block;min-width:min-content}
 
 
 /* provenance */
@@ -231,6 +256,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#weights">Weights</a>
     <a class="lnk" href="#glyphs">Glyphs</a>
     <a class="lnk" href="#art">Art</a>
+    <a class="lnk" href="#boxdraw">Box</a>
     <a class="lnk" href="#story">Story</a>
     <a class="lnk" href="#get">Get it</a>
     <button id="theme" title="Toggle theme">◐</button>
@@ -312,6 +338,17 @@ footer a{color:var(--accent);text-decoration:none}
       &nbsp; size <input id="as" type="range" min="5" max="14" value="8"></div>
     <div class="artwrap"><pre class="art" id="artB">__ARTB__</pre></div>
     <div class="artwrap"><pre class="art" id="artA">__ARTA__</pre></div>
+  </div>
+</section>
+
+<section id="boxdraw">
+  <div class="wrap reveal">
+    <p class="eyebrow">Box drawing</p>
+    <h2>Tables that actually line up.</h2>
+    <p class="lead">A full, self-drawn box set — light, heavy, double and rounded — with every corner
+      <i>and</i> junction softly rounded in the Comic style, and woven double joints. Mixed
+      single/double borders with different column widths tile seamlessly, so real tables just work.</p>
+    <div class="boxwrap"><pre class="boxtbl" id="boxtbl">__BOXTABLE__</pre></div>
   </div>
 </section>
 
@@ -448,6 +485,7 @@ document.getElementById('cvs').addEventListener('input',e=>{
 out = (TPL.replace("__FACES__", FACES).replace("__HERO__", HERO_LETTERS)
           .replace("__TOTAL__", str(TOTAL)).replace("__LADDER__", LADDER)
           .replace("__COVERAGE__", COVERAGE).replace("__PROV__", PROV)
-          .replace("__ARTB__", ARTB).replace("__ARTA__", ARTA))
+          .replace("__ARTB__", ARTB).replace("__ARTA__", ARTA)
+          .replace("__BOXTABLE__", BOXTABLE))
 open(OUT, "w").write(out)
 print("index.html:", TOTAL, "glyphs,", len(order), "coverage blocks,", len(STORY), "story cards")

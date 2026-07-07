@@ -11,3 +11,6 @@ __pycache__/
 # editors / IDE
 .idea/
 .vscode/
+
+# local shapely venv for box-glyph generation
+.venv-box/

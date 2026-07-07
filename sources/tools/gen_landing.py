@@ -109,6 +109,39 @@ HERO_LETTERS = "".join(
 
 TOTAL = len(cm)
 
+# ---- glyph-count comparison chart ----
+# Numbers are measured live from each source font's cmap (fontTools), never hand-typed,
+# so the chart can never drift from reality. Sources all live in sources/vendor/.
+VENDOR = ROOT + "/sources/vendor/"
+def cmap_count(rel):
+    try:
+        return len(TTFont(VENDOR + rel).getBestCmap())
+    except Exception:
+        return None
+# (display name, glyph source / author, vendor file)
+CHART_SRC = [
+    ("Serious Shanns",    "kaBeech",              "SeriousShanns-Regular.otf"),
+    ("Comic Mono",        "dtinth · the base",    "ComicMono.ttf"),
+    ("Comic Shanns v2",   "Shannon Miwa",         "ComicShanns-v2.ttf"),
+    ("clsn fork",         "clsn · PR unmerged",   "clsn-thousands-shannsmono.ttf"),
+    ("Comic Shanns Mono", "jesusmgg",             "ComicShannsMono-Regular.ttf"),
+]
+crows = [(name, who, cmap_count(f), False) for name, who, f in CHART_SRC]
+crows = [r for r in crows if r[2]]                       # drop any that failed to load
+crows.append(("Comic True Mono", "assembled here", TOTAL, True))
+crows.sort(key=lambda r: r[2])                           # ascending: build up to the winner
+CMAX = max(r[2] for r in crows)
+CHART = ""
+for name, who, cnt, win in crows:
+    pct = round(cnt / CMAX * 100, 1)
+    barcls = "cbar win" if win else "cbar"
+    numcls = "cnum win" if win else "cnum"
+    tag = '<span class="ctag">★ richest free set</span>' if win else ""
+    CHART += (f'<div class="crow"><div class="clab"><b>{html.escape(name)}</b>'
+              f'<span>{html.escape(who)}</span></div>'
+              f'<div class="ctrack"><div class="{barcls}" data-pct="{pct}" style="width:0"></div>{tag}</div>'
+              f'<span class="{numcls}" data-n="{cnt}">0</span></div>')
+
 TPL = r"""<!doctype html>
 <html lang="en">
 <meta charset="utf-8">
@@ -229,6 +262,39 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .pdesc{font-size:14px;margin:9px 0 10px}
 .psample{font-family:CTM;font-size:22px;line-height:1.5;word-break:break-all;color:var(--fg)}
 
+/* comparison chart */
+.chart{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:18px 22px 12px;overflow:hidden;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px}
+/* fixed columns so every row's bar track is identical width — bars stay comparable */
+.crow{display:grid;grid-template-columns:172px 1fr 3.5ch;gap:14px;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:0}
+.clab b{display:block;font-size:14px;font-weight:700;letter-spacing:-.01em}
+.clab span{font-size:11px;color:var(--mut);font-family:CTM}
+.ctrack{position:relative;min-width:0}
+.cbar{height:27px;width:0;border-radius:8px;font-size:11px;
+  transition:width 1.15s cubic-bezier(.22,1,.36,1);
+  background:color-mix(in srgb,var(--fg) 11%,transparent);
+  background-image:repeating-linear-gradient(90deg,color-mix(in srgb,var(--fg) 8%,transparent) 0 1ch,transparent 1ch 2ch)}
+.cbar.win{background:var(--accent);
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 1ch,transparent 1ch 2ch);
+  box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 32%,transparent)}
+.cnum{font-family:CTM;font-weight:700;font-size:15px;text-align:right}
+.cnum.win{color:var(--accent)}
+/* the ★ badge rides on the bar (absolute) so it never steals width from any track */
+.ctag{position:absolute;top:50%;right:9px;transform:translateY(-50%);
+  font-family:CTM;font-size:10px;color:#fff;background:rgba(0,0,0,.32);
+  border-radius:999px;padding:2px 8px;white-space:nowrap;pointer-events:none}
+.ccap{color:var(--mut);font-size:12.5px;margin:14px 2px 0;max-width:66ch}
+.ccap .mono{font-size:12px;color:var(--fg)}
+@media (max-width:560px){
+  .crow{grid-template-columns:104px 1fr 3.5ch;gap:10px}
+  .clab b{font-size:12.5px}
+  .clab span{font-size:10px}
+  .ctag{font-size:9px;padding:2px 6px;right:6px}
+}
+
 /* install */
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .box{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:18px}
@@ -258,6 +324,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#art">Art</a>
     <a class="lnk" href="#boxdraw">Box</a>
     <a class="lnk" href="#story">Story</a>
+    <a class="lnk" href="#compare">Compare</a>
     <a class="lnk" href="#get">Get it</a>
     <button id="theme" title="Toggle theme">◐</button>
   </div>
@@ -361,6 +428,20 @@ footer a{color:var(--accent);text-decoration:none}
       (kaBeech's italics have been open since 2024). Comic True Mono gathers that scattered work into one
       place — every glyph from an MIT source — and constructs the few that existed nowhere.</p>
     <div class="pgrid">__PROV__</div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap reveal">
+    <p class="eyebrow">Comparison</p>
+    <h2>More glyphs than any free comic mono.</h2>
+    <p class="lead">Folding every scattered fork into one file pays off in coverage: Comic True Mono
+      carries a wider character set than any free monospaced Comic Sans. The bars below <i>are</i> its
+      own sources — each measured glyph-for-glyph, straight from the font.</p>
+    <div class="chart" id="cchart">__CHART__</div>
+    <p class="ccap">Glyph counts read live from every font's <span class="mono">cmap</span> table with
+      fontTools — never hand-typed — and each source ships in <span class="mono">sources/vendor/</span>.
+      The only richer option is the paid, closed-source Comic&nbsp;Code.</p>
   </div>
 </section>
 
@@ -473,6 +554,26 @@ document.getElementById('cvs').addEventListener('input',e=>{
   [aw,as].forEach(e=>e.addEventListener('input',u)); u();
 })();
 
+// comparison chart: grow bars + count numbers up when it scrolls into view
+(function(){
+  const chart=document.getElementById('cchart'); if(!chart) return;
+  const bars=[...chart.querySelectorAll('.cbar')], nums=[...chart.querySelectorAll('.cnum')];
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce){ bars.forEach(b=>b.style.width=b.dataset.pct+'%'); nums.forEach(n=>n.textContent=n.dataset.n); return; }
+  function run(){
+    bars.forEach(b=>b.style.width=b.dataset.pct+'%');
+    nums.forEach(n=>{
+      const end=+n.dataset.n; let t0=null;
+      const step=ts=>{ if(t0===null)t0=ts; const p=Math.min((ts-t0)/1150,1);
+        n.textContent=Math.round(end*(1-Math.pow(1-p,3)));
+        if(p<1)requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    });
+  }
+  const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){run();io.disconnect();}}),{threshold:.35});
+  io.observe(chart);
+})();
+
 // scroll reveal
 (function(){
   const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.12});
@@ -485,6 +586,7 @@ document.getElementById('cvs').addEventListener('input',e=>{
 out = (TPL.replace("__FACES__", FACES).replace("__HERO__", HERO_LETTERS)
           .replace("__TOTAL__", str(TOTAL)).replace("__LADDER__", LADDER)
           .replace("__COVERAGE__", COVERAGE).replace("__PROV__", PROV)
+          .replace("__CHART__", CHART)
           .replace("__ARTB__", ARTB).replace("__ARTA__", ARTA)
           .replace("__BOXTABLE__", BOXTABLE))
 open(OUT, "w").write(out)

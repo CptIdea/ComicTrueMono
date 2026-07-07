@@ -20,7 +20,7 @@ very reason for a new project.
 | **Comic Code** | yes | **yes** (+ Greek) | paid (~$59+, has a Coding Essentials pack) | original design by Toshi Omagari |
 | **Comic Mono** | yes | no (Latin + accents/math) | MIT, free | patch of Comic Shanns v1 |
 | **Comic Shanns Mono** | yes | no (Latin + diacritics, box-drawing, Braille) | free | Comic Shanns v2 |
-| **Serious Shanns** | yes | no | free (OFL) | fork of Comic Mono |
+| **Serious Shanns** | yes | no | free (MIT) | fork of Comic Mono |
 | **Comic Shanns (v1/v2)** | no (proportional) | no (Latin + accents + math in v2) | free | Shannon Miwa |
 
 Verified by reading each project's README/page directly — Cyrillic is nowhere claimed.

@@ -197,7 +197,7 @@ for cp in CEU_ACCENT:           # override with lilmayu's corrected diacritics
 paste_glyph(master, gv, LAMBDA)                       # give-back = Comic Mono size
 for cp in (0x0141, 0x0142):     # L-stroke / l-stroke from Serious Shanns (MIT)
     paste_glyph(master, sr, cp, SCALE_SERIOUS)
-# Constructed (absent from every source — verified across all 17 files):
+# Constructed (absent from every source — verified across all vendored files):
 slash_through(master, 0x006F, 0x00F8, "oslash")   # o-slash
 slash_through(master, 0x004F, 0x00D8, "Oslash")   # O-slash
 raised_dot(master)                                 # middle dot

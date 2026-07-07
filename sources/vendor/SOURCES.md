@@ -13,8 +13,13 @@ top-level [`LICENSE`](../../LICENSE).
 | `clsn-thousands-shannsmono.ttf` | [clsn/comic-shanns](https://github.com/clsn/comic-shanns) | `thousands` | MIT | reference (digit-separating commas) |
 | `lilmayu-shanns2.ttf` | [lilmayu/comic-shanns](https://github.com/lilmayu/comic-shanns) | `fix/czech-slovak-diacritics` | MIT | corrected caron/háček diacritics |
 | `ComicShanns-v1.otf`, `ComicShanns-v2.otf`, `ComicShanns-v2.ttf` | [shannpersand/comic-shanns](https://github.com/shannpersand/comic-shanns) | master | MIT | root letterforms; comparison |
-| `ComicShannsMono-Regular.otf`, `ComicShannsMono-Regular.ttf` | [jesusmgg/comic-shanns-mono](https://github.com/jesusmgg/comic-shanns-mono) | master | MIT | comparison (box-drawing, Braille) |
-| `nerd-ComicMonoNerdFont-Regular.ttf` | [symroe/comic-mono-font](https://github.com/symroe/comic-mono-font) | `nerd-font` (PR #17) | MIT + icon licenses | reference (Nerd Fonts patch of Comic Mono) |
+| `ComicShannsMono-Regular.otf`, `ComicShannsMono-Regular.ttf` | [jesusmgg/comic-shanns-mono](https://github.com/jesusmgg/comic-shanns-mono) | master | MIT | Braille + comparison (box-drawing) |
+
+Every file above is MIT. A Nerd-Fonts-patched Comic Mono was reviewed during research
+but is **not vendored**: the ~10k patched-in icons carry the Nerd Fonts project's mixed
+licenses (MIT / OFL / Apache-2.0 / CC-BY), so it is not license-clean for this MIT repo.
+If a Nerd Font variant is built later, run the official patcher as a separate step and
+document those icon licenses there.
 
 ## Build inputs actually consumed by `sources/build.py`
 

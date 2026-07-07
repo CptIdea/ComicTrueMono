@@ -76,6 +76,11 @@ for name, who, lic, desc, sample in STORY:
              f'<div class="pdesc">{html.escape(desc)}</div>'
              f'<div class="psample">{html.escape(sample)}</div></div>')
 
+_art = open(ROOT + "/sources/tools/art-samples.txt", encoding="utf-8").read()
+_b, _a = _art.split("===ASCII===")
+ARTB = html.escape(_b.strip("\n"))
+ARTA = html.escape(_a.strip("\n"))
+
 HERO_LETTERS = "".join(
     f'<span class="hl" style="--i:{i}">{html.escape(ch)}</span>' if ch != " " else '<span class="hsp"> </span>'
     for i, ch in enumerate("Comic True Mono"))
@@ -181,6 +186,10 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .cvhdr span{font-family:CTM;font-size:11px;opacity:.7}
 .cvglyphs{font-family:CTM;font-size:var(--cvfs,26px);line-height:1.7;word-break:break-all;
   background-image:repeating-linear-gradient(90deg,var(--grid) 0 1ch,transparent 1ch 2ch)}
+.artctrl{font-size:13px;color:var(--mut);margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.artctrl input[type=range]{accent-color:var(--accent)}
+.artwrap{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow-x:auto;padding:14px;margin-bottom:12px}
+.art{font-family:CTM;font-weight:700;white-space:pre;margin:0;font-size:var(--artfs,8px);line-height:1;color:var(--fg)}
 
 
 /* provenance */
@@ -221,6 +230,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#type">Type</a>
     <a class="lnk" href="#weights">Weights</a>
     <a class="lnk" href="#glyphs">Glyphs</a>
+    <a class="lnk" href="#art">Art</a>
     <a class="lnk" href="#story">Story</a>
     <a class="lnk" href="#get">Get it</a>
     <button id="theme" title="Toggle theme">◐</button>
@@ -289,6 +299,19 @@ footer a{color:var(--accent);text-decoration:none}
     <p class="lead">Full European Latin, symbols, currency, arrows, math — laid over a one-cell grid.
       Every glyph fills exactly one column: that is what monospaced means.</p>
     __COVERAGE__
+  </div>
+</section>
+
+<section id="art">
+  <div class="wrap reveal">
+    <p class="eyebrow">Bonus</p>
+    <h2>It even renders text-mode art.</h2>
+    <p class="lead">All 256 Braille patterns plus a true monospace grid — text-mode art lands cleanly.
+      Drag the weight and watch the dots swell.</p>
+    <div class="artctrl">weight <input id="aw" type="range" min="0" max="8" value="6"> <span class="mono" id="awn"></span>
+      &nbsp; size <input id="as" type="range" min="5" max="14" value="8"></div>
+    <div class="artwrap"><pre class="art" id="artB">__ARTB__</pre></div>
+    <div class="artwrap"><pre class="art" id="artA">__ARTA__</pre></div>
   </div>
 </section>
 
@@ -401,6 +424,18 @@ document.getElementById('cvs').addEventListener('input',e=>{
   document.querySelectorAll('.cvglyphs').forEach(g=>g.style.setProperty('--cvfs',e.target.value+'px'));
 });
 
+// art: weight + size sliders
+(function(){
+  const NAMES=['Thin','ExtraLight','Light','Regular','Medium','SemiBold','Bold','ExtraBold','Black'];
+  const WV=[100,200,300,400,500,600,700,800,900];
+  const aw=document.getElementById('aw'),as=document.getElementById('as');
+  function u(){
+    document.querySelectorAll('.art').forEach(p=>{p.style.fontWeight=WV[+aw.value];p.style.setProperty('--artfs',as.value+'px');});
+    document.getElementById('awn').textContent=NAMES[+aw.value];
+  }
+  [aw,as].forEach(e=>e.addEventListener('input',u)); u();
+})();
+
 // scroll reveal
 (function(){
   const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.12});
@@ -412,6 +447,7 @@ document.getElementById('cvs').addEventListener('input',e=>{
 
 out = (TPL.replace("__FACES__", FACES).replace("__HERO__", HERO_LETTERS)
           .replace("__TOTAL__", str(TOTAL)).replace("__LADDER__", LADDER)
-          .replace("__COVERAGE__", COVERAGE).replace("__PROV__", PROV))
+          .replace("__COVERAGE__", COVERAGE).replace("__PROV__", PROV)
+          .replace("__ARTB__", ARTB).replace("__ARTA__", ARTA))
 open(OUT, "w").write(out)
 print("index.html:", TOTAL, "glyphs,", len(order), "coverage blocks,", len(STORY), "story cards")

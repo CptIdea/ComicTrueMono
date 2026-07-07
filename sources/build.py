@@ -53,11 +53,13 @@ IMPORT_RANGES = [
     (0x20A0, 0x20BF),   # Currency: euro
     (0x2190, 0x21FF),   # Arrows: left up right down
     (0x2200, 0x22FF),   # Math Operators: for-all, exists, ...
+    (0x02B0, 0x02FF),   # Spacing modifier letters: circumflex, breve, ring, ogonek, tilde, dbl-acute
+    (0x1E00, 0x1EFF),   # Latin Extended Additional: Welsh W/Y with grave/acute/diaeresis
     (0xA75B, 0xA75B),   # r-rotunda
 ]
-# These 14 are overridden from lilmayu (corrected caron / hacek).
+# These are overridden from lilmayu (corrected caron / hacek), incl. the standalone caron U+02C7.
 CEU_ACCENT = [0x010C,0x010D,0x010E,0x011A,0x011B,0x0147,0x0148,
-              0x0158,0x0159,0x0160,0x0161,0x0164,0x017D,0x017E]
+              0x0158,0x0159,0x0160,0x0161,0x0164,0x017D,0x017E,0x02C7]
 LAMBDA = 0x03BB
 
 def recenter(g):
@@ -68,7 +70,10 @@ def recenter(g):
 
 def refit_all(font):
     for g in font.glyphs():
-        recenter(g)
+        if g.unicode and 0x2800 <= g.unicode <= 0x28FF:
+            g.width = CELL          # Braille: preserve the dot grid — normalize advance only
+        else:
+            recenter(g)
 
 def open_src(path):
     f = fontforge.open(path)
@@ -111,13 +116,36 @@ def raised_dot(font, cp=0x00B7, name="periodcentered"):
     g.transform(psMat.translate(0, 380 - (ymin+ymax)/2))
     recenter(g)
 
-def paste_glyph(dst, src, cp):
+# Source letters are drawn smaller than Comic Mono; scale imports up to match its size.
+# (measured on H/O/o/x/n cap- and x-heights, ratios are uniform per source)
+SCALE_SHANNS_V2 = 1.069   # clsn-morechars / lilmayu (Comic Shanns v2) are ~6.9% smaller
+SCALE_SERIOUS   = 1.177   # Serious Shanns is ~17.7% smaller
+
+def paste_glyph(dst, src, cp, scale=1.0):
     src.selection.select(("unicode", None), cp)
     src.copy()
     dst.createChar(cp)
     dst.selection.select(("unicode", None), cp)
     dst.paste()
-    recenter(dst[cp])
+    g = dst[cp]
+    if scale != 1.0:
+        g.transform(psMat.scale(scale, scale))   # scale about baseline; recenter fixes x
+    recenter(g)
+
+# Grid glyphs (Braille): keep the dot grid in place — uniform scale, NO recenter.
+# Map ShannsMono's braille cell (549 @ em1000, i.e. 549*EM/1000 after our em change) to CELL.
+GRID_SCALE = CELL / (549 * (EM / 1000.0))
+
+def paste_grid(dst, src, cp):
+    src.selection.select(("unicode", None), cp)
+    src.copy()
+    dst.createChar(cp)
+    dst.selection.select(("unicode", None), cp)
+    dst.paste()
+    g = dst[cp]
+    g.transform(psMat.scale(GRID_SCALE, GRID_SCALE))
+    g.width = CELL
+    return g
 
 def brand(font, style, wclass, italic):
     name = style + (" Italic" if italic else "")
@@ -151,6 +179,7 @@ mc = open_src(VENDOR+"/clsn-morechars-shanns2.ttf")
 lm = open_src(VENDOR+"/lilmayu-shanns2.ttf")
 gv = open_src(VENDOR+"/gb-ComicMono.ttf")
 sr = open_src(VENDOR+"/SeriousShanns-Regular.otf")   # source of L-stroke / l-stroke (kaBeech, MIT)
+sm = open_src(VENDOR+"/ComicShannsMono-Regular.ttf") # Braille source (jesusmgg, MIT)
 
 for src in (mc, lm, sr):        # flatten any composite references -> real contours
     src.selection.all()
@@ -162,18 +191,22 @@ base_cps = {g.unicode for g in master.glyphs() if g.unicode and g.unicode > 0}  
 mc_cps = {g.unicode for g in mc.glyphs() if g.unicode and g.unicode > 0}
 want = sorted({cp for a, b in IMPORT_RANGES for cp in range(a, b+1)} & mc_cps - base_cps)
 for cp in want:
-    paste_glyph(master, mc, cp)
+    paste_glyph(master, mc, cp, SCALE_SHANNS_V2)
 for cp in CEU_ACCENT:           # override with lilmayu's corrected diacritics
-    paste_glyph(master, lm, cp)
-paste_glyph(master, gv, LAMBDA)
+    paste_glyph(master, lm, cp, SCALE_SHANNS_V2)
+paste_glyph(master, gv, LAMBDA)                       # give-back = Comic Mono size
 for cp in (0x0141, 0x0142):     # L-stroke / l-stroke from Serious Shanns (MIT)
-    paste_glyph(master, sr, cp)
+    paste_glyph(master, sr, cp, SCALE_SERIOUS)
 # Constructed (absent from every source — verified across all 17 files):
 slash_through(master, 0x006F, 0x00F8, "oslash")   # o-slash
 slash_through(master, 0x004F, 0x00D8, "Oslash")   # O-slash
 raised_dot(master)                                 # middle dot
-print(f"   added: {len(want)} by range + 14 lilmayu + lambda + L-stroke + constructed o/O-slash, middot")
-for s in (mc, lm, gv, sr): s.close()
+braille = [cp for cp in range(0x2800, 0x2900)      # Braille Patterns (256), grid glyphs
+           if cp in {g.unicode for g in sm.glyphs() if g.unicode and g.unicode > 0}]
+for cp in braille:
+    paste_grid(master, sm, cp)
+print(f"   added: {len(want)} by range + 14 lilmayu + lambda + L-stroke + o/O-slash, middot + {len(braille)} braille")
+for s in (mc, lm, gv, sr, sm): s.close()
 BUILDTMP = ROOT + "/sources/.cache"; os.makedirs(BUILDTMP, exist_ok=True)
 MASTER_PATH = BUILDTMP + "/_master-Regular.ttf"
 master.generate(MASTER_PATH)

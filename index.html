@@ -114,6 +114,10 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .cvhdr span{font-family:CTM;font-size:11px;opacity:.7}
 .cvglyphs{font-family:CTM;font-size:var(--cvfs,26px);line-height:1.7;word-break:break-all;
   background-image:repeating-linear-gradient(90deg,var(--grid) 0 1ch,transparent 1ch 2ch)}
+.artctrl{font-size:13px;color:var(--mut);margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.artctrl input[type=range]{accent-color:var(--accent)}
+.artwrap{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow-x:auto;padding:14px;margin-bottom:12px}
+.art{font-family:CTM;font-weight:700;white-space:pre;margin:0;font-size:var(--artfs,8px);line-height:1;color:var(--fg)}
 
 
 /* provenance */
@@ -154,6 +158,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#type">Type</a>
     <a class="lnk" href="#weights">Weights</a>
     <a class="lnk" href="#glyphs">Glyphs</a>
+    <a class="lnk" href="#art">Art</a>
     <a class="lnk" href="#story">Story</a>
     <a class="lnk" href="#get">Get it</a>
     <button id="theme" title="Toggle theme">◐</button>
@@ -173,7 +178,7 @@ footer a{color:var(--accent);text-decoration:none}
       <span class="pill mono">9 weights × italic</span>
     </div>
     <div class="stats mono">
-      <div class="stat"><b>318</b><span>glyphs</span></div>
+      <div class="stat"><b>590</b><span>glyphs</span></div>
       <div class="stat"><b>9×2</b><span>weights + italic</span></div>
       <div class="stat"><b>1116</b><span>mono advance</span></div>
       <div class="stat"><b>100%</b><span>MIT</span></div>
@@ -216,12 +221,71 @@ footer a{color:var(--accent);text-decoration:none}
 <section id="glyphs">
   <div class="wrap reveal">
     <div class="cvhead">
-      <div><p class="eyebrow">Coverage</p><h2 style="margin:0">318 glyphs, one width.</h2></div>
+      <div><p class="eyebrow">Coverage</p><h2 style="margin:0">590 glyphs, one width.</h2></div>
       <label class="note mono">size <input id="cvs" type="range" min="18" max="44" value="26" style="accent-color:var(--accent)"></label>
     </div>
     <p class="lead">Full European Latin, symbols, currency, arrows, math — laid over a one-cell grid.
       Every glyph fills exactly one column: that is what monospaced means.</p>
-    <div class="cvblk"><div class="cvhdr">Basic Latin<span>95</span></div><div class="cvglyphs"> !&quot;#$%&amp;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</div></div><div class="cvblk"><div class="cvhdr">Latin-1 Supplement<span>79</span></div><div class="cvglyphs">¡¢£¤¥¦¨«¬¯°±´·¸»¼¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖ×ØÙÚÛÜÝÞàáâãäåæçèéêëìíîïñòóôõö÷øùúûüýþÿ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-A<span>110</span></div><div class="cvglyphs">ĀāĂăĄąĆćĈĉĊċČčĎďĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĨĩĪīĬĭĮįİıĴĵĶķĹĺĻļŁłŃńŅņŇňŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-B<span>7</span></div><div class="cvglyphs">ƿǷȘșȚțȷ</div></div><div class="cvblk"><div class="cvhdr">Greek<span>1</span></div><div class="cvglyphs">λ</div></div><div class="cvblk"><div class="cvhdr">Punctuation<span>14</span></div><div class="cvglyphs">–—‘’‚“”†‡•…‹›⁄</div></div><div class="cvblk"><div class="cvhdr">Currency<span>1</span></div><div class="cvglyphs">€</div></div><div class="cvblk"><div class="cvhdr">Arrows<span>4</span></div><div class="cvglyphs">←↑→↓</div></div><div class="cvblk"><div class="cvhdr">Math<span>6</span></div><div class="cvglyphs">∀∃∄−≤≥</div></div><div class="cvblk"><div class="cvhdr">Latin Ext-D<span>1</span></div><div class="cvglyphs">ꝛ</div></div>
+    <div class="cvblk"><div class="cvhdr">Basic Latin<span>95</span></div><div class="cvglyphs"> !&quot;#$%&amp;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</div></div><div class="cvblk"><div class="cvhdr">Latin-1 Supplement<span>79</span></div><div class="cvglyphs">¡¢£¤¥¦¨«¬¯°±´·¸»¼¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖ×ØÙÚÛÜÝÞàáâãäåæçèéêëìíîïñòóôõö÷øùúûüýþÿ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-A<span>110</span></div><div class="cvglyphs">ĀāĂăĄąĆćĈĉĊċČčĎďĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĨĩĪīĬĭĮįİıĴĵĶķĹĺĻļŁłŃńŅņŇňŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-B<span>7</span></div><div class="cvglyphs">ƿǷȘșȚțȷ</div></div><div class="cvblk"><div class="cvhdr">Other<span>272</span></div><div class="cvglyphs">ˆˇ˘˙˚˛˜˝ẀẁẂẃẄẅỲỳ⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿⡀⡁⡂⡃⡄⡅⡆⡇⡈⡉⡊⡋⡌⡍⡎⡏⡐⡑⡒⡓⡔⡕⡖⡗⡘⡙⡚⡛⡜⡝⡞⡟⡠⡡⡢⡣⡤⡥⡦⡧⡨⡩⡪⡫⡬⡭⡮⡯⡰⡱⡲⡳⡴⡵⡶⡷⡸⡹⡺⡻⡼⡽⡾⡿⢀⢁⢂⢃⢄⢅⢆⢇⢈⢉⢊⢋⢌⢍⢎⢏⢐⢑⢒⢓⢔⢕⢖⢗⢘⢙⢚⢛⢜⢝⢞⢟⢠⢡⢢⢣⢤⢥⢦⢧⢨⢩⢪⢫⢬⢭⢮⢯⢰⢱⢲⢳⢴⢵⢶⢷⢸⢹⢺⢻⢼⢽⢾⢿⣀⣁⣂⣃⣄⣅⣆⣇⣈⣉⣊⣋⣌⣍⣎⣏⣐⣑⣒⣓⣔⣕⣖⣗⣘⣙⣚⣛⣜⣝⣞⣟⣠⣡⣢⣣⣤⣥⣦⣧⣨⣩⣪⣫⣬⣭⣮⣯⣰⣱⣲⣳⣴⣵⣶⣷⣸⣹⣺⣻⣼⣽⣾⣿</div></div><div class="cvblk"><div class="cvhdr">Greek<span>1</span></div><div class="cvglyphs">λ</div></div><div class="cvblk"><div class="cvhdr">Punctuation<span>14</span></div><div class="cvglyphs">–—‘’‚“”†‡•…‹›⁄</div></div><div class="cvblk"><div class="cvhdr">Currency<span>1</span></div><div class="cvglyphs">€</div></div><div class="cvblk"><div class="cvhdr">Arrows<span>4</span></div><div class="cvglyphs">←↑→↓</div></div><div class="cvblk"><div class="cvhdr">Math<span>6</span></div><div class="cvglyphs">∀∃∄−≤≥</div></div><div class="cvblk"><div class="cvhdr">Latin Ext-D<span>1</span></div><div class="cvglyphs">ꝛ</div></div>
+  </div>
+</section>
+
+<section id="art">
+  <div class="wrap reveal">
+    <p class="eyebrow">Bonus</p>
+    <h2>It even renders text-mode art.</h2>
+    <p class="lead">All 256 Braille patterns plus a true monospace grid — text-mode art lands cleanly.
+      Drag the weight and watch the dots swell.</p>
+    <div class="artctrl">weight <input id="aw" type="range" min="0" max="8" value="6"> <span class="mono" id="awn"></span>
+      &nbsp; size <input id="as" type="range" min="5" max="14" value="8"></div>
+    <div class="artwrap"><pre class="art" id="artB">⡀⡀⡀⣠⣴⣶⣶⣶⣤⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⢀⣤⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⢠⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣶⣄⡀⡀⡀⡀⡀⡀⡀⡀⢀⣶⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀
+⡀⣠⣿⠟⠉⡀⡀⠈⠙⠿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⠛⠁⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⣿⡄⡀⡀⡀⡀⡀⡀⢀⣿⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀
+⢠⣿⠃⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⢀⣀⣀⣀⡀⡀⡀⡀⡀⣀⡀⣀⣀⣀⡀⡀⡀⣀⣀⡀⡀⡀⡀⡀⣀⡀⡀⡀⡀⡀⣀⣀⣀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⢀⣀⡀⢀⣀⡀⡀⣀⡀⡀⡀⡀⡀⣀⡀⡀⡀⡀⡀⣀⣀⣀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡏⣿⡀⡀⡀⡀⡀⡀⣿⠋⣿⡀⡀⡀⡀⡀⣀⣀⣀⡀⡀⡀⡀⡀⣀⡀⡀⣀⣀⣀⡀⡀⡀⡀⡀⡀⣀⣀⣀⡀⡀⡀
+⣾⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⢀⣾⠟⠉⠉⠻⣿⡄⡀⡀⢸⣿⡾⠋⠉⠻⣿⣴⠟⠉⠙⣿⣧⡀⡀⡀⣿⡀⡀⡀⣴⡿⠛⠉⠙⠿⠂⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⢸⣿⣾⠛⠉⡀⡀⣿⡀⡀⡀⡀⡀⣿⡀⡀⡀⣴⡿⠉⠉⠙⢿⣆⡀⡀⡀⡀⡀⡀⡀⣿⡇⠘⣿⡀⡀⡀⡀⣾⠏⡀⣿⡀⡀⡀⣠⣿⠛⠉⠙⠿⣷⡀⡀⡀⣿⣧⠟⠋⠉⠻⣿⡄⡀⡀⣠⣿⠛⠉⠙⠿⣷⡀
+⣿⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡏⡀⡀⡀⡀⠸⣿⡀⡀⢸⣿⡀⡀⡀⡀⣿⡏⡀⡀⡀⢸⣿⡀⡀⡀⣿⡀⡀⢸⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⢸⣿⡀⡀⡀⡀⡀⣿⡀⡀⡀⡀⡀⣿⡀⡀⢸⣿⡀⡀⡀⡀⡀⣿⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⠘⣿⡀⡀⣼⠟⡀⡀⣿⡀⡀⡀⣿⠁⡀⡀⡀⡀⢿⣷⡀⡀⣿⡿⡀⡀⡀⡀⣿⡇⡀⡀⣿⠁⡀⡀⡀⡀⢿⣷
+⠸⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⣿⡀⡀⢸⣿⡀⡀⡀⡀⣿⡇⡀⡀⡀⢸⣿⡀⡀⡀⣿⡀⡀⢻⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⢸⣿⡀⡀⡀⡀⡀⣿⡀⡀⡀⡀⡀⣿⡀⡀⢻⣿⠛⠛⠛⠛⠛⠛⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⠹⣷⣼⡟⡀⡀⡀⣿⡀⡀⠐⣿⡀⡀⡀⡀⡀⢸⣿⡀⡀⣿⡇⡀⡀⡀⡀⣿⡇⡀⠐⣿⡀⡀⡀⡀⡀⢸⣿
+⡀⢻⣿⣀⡀⡀⡀⡀⡀⣤⡀⡀⢻⣷⡀⡀⡀⡀⣼⡿⡀⡀⢸⣿⡀⡀⡀⡀⣿⡇⡀⡀⡀⢸⣿⡀⡀⡀⣿⡀⡀⠘⣿⡄⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⢸⣿⡀⡀⡀⡀⡀⣿⡄⡀⡀⡀⣼⣿⡀⡀⠘⣿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⠹⠿⡀⡀⡀⡀⣿⡀⡀⡀⣿⣆⡀⡀⡀⡀⣿⠏⡀⡀⣿⡇⡀⡀⡀⡀⣿⡇⡀⡀⣿⣆⡀⡀⡀⡀⣿⠏
+⡀⡀⠉⠿⣿⣿⣿⣿⠿⠋⡀⡀⡀⠙⢿⣶⣶⣿⠟⡀⡀⡀⠸⣿⡀⡀⡀⡀⣿⡇⡀⡀⡀⠸⣿⡀⡀⡀⣿⡀⡀⡀⠈⠿⣷⣶⣾⠿⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡇⡀⡀⡀⡀⡀⢸⣿⡀⡀⡀⡀⡀⠙⣿⣷⣶⡿⠁⣿⡀⡀⡀⠈⠿⣷⣶⣶⡿⠛⡀⡀⡀⡀⡀⡀⡀⣿⠇⡀⡀⡀⡀⡀⡀⡀⡀⡀⣿⡀⡀⡀⡀⠻⣿⣶⣶⡿⠋⡀⡀⡀⣿⡇⡀⡀⡀⡀⣿⡇⡀⡀⡀⠻⣿⣶⣶⡿⠋⡀
+⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀
+⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀⡀</pre></div>
+    <div class="artwrap"><pre class="art" id="artA">               ......                  .............
+            .....;;...                ................
+         .......;;;;;/mmmmmmmmmmmmmm\/..................
+       ........;;;mmmmmmmmmmmmmmmmmmm.....................
+     .........;;m/;;;;\mmmmmm/;;;;;\m......................
+  ..........;;;m;;mmmm;;mmmm;;mmmmm;;m......................
+..........;;;;;mmmnnnmmmmmmmmmmnnnmmmm\....................
+.........  ;;;;;n/#####\nmmmmn/#####\nmm\.................
+.......     ;;;;n##...##nmmmmn##...##nmmmm\.............
+....        ;;;n#.....|nmmmmn#.....#nmmmmm,l.........
+ ..          mmmn\.../nmmmmmmn\.../nmmmm,m,lll.....
+          /mmmmmmmmmmmmmmmmmmmmmmmmmmm,mmmm,llll..
+      /mmmmmmmmmmmmmmmmmmmmmmm\nmmmn/mmmmmmm,lll/
+   /mmmmm/..........\mmmmmmmmmmnnmnnmmmmmmmmm,ll
+  mmmmmm|...........|mmmmmmmmmmmmmmmmmmmmmmmm,ll
+  \mmmmmmm\......./mmmmmmmmmmmmmmmmmmmmmmmmm,llo
+    \mmmmmmm\.../mmmmmmmmmmmmmmmmmmmmmmmmmm,lloo
+      \mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm,ll/oooo
+         \mmmmmmmmmmll..;;;.;;;;;;/mmm,lll/oooooo\
+                   ll..;;;.;;;;;;/llllll/ooooooooo
+                   ll.;;;.;;;;;/.llll/oooooooooo..o
+                   ll;;;.;;;;;;..ll/ooooooooooo...oo
+                   \;;;;.;;;;;..ll/ooooo...ooooo..oo\
+                 ;;;;;;;;;;;;..ll|oooo.....oooooooooo
+                ;;;;;;.;;;;;;.ll/oooo.....ooooooo....\
+                ;;;;;.;;;;;;;ll/ooooooooooooo.....oooo
+                 \;;;.;;;;;;/oooooooooooo.....oooooooo\
+                  \;;;.;;;;/ooooooooo.....ooooooooooooo
+                    \;;;;/ooooooo.....ooooooooooo...ooo\
+                    |o\;/oooo.....ooooooooooooo......ooo
+                    oooooo....ooooooooooooooooooo.....oo\
+                   oooo....oooooooooooooooooooooooo..oooo
+                  ___.oooooooooooooo....ooooooooooooooooo\
+                 /XXX\oooooooooooo.....ooooooooooooooooooo
+                 |XXX|ooooo.oooooo....ooooooooooooooooooooo
+               /oo\X/oooo..ooooooooooooooooooo..oooooooooooo
+             /ooooooo..ooooo..oooooooooooooo.....ooooooooo...
+           /ooooo...ooooo.....oooooooooooo.......ooooooo.....o</pre></div>
   </div>
 </section>
 
@@ -333,6 +397,18 @@ make            # build fonts + specimens</pre>
 document.getElementById('cvs').addEventListener('input',e=>{
   document.querySelectorAll('.cvglyphs').forEach(g=>g.style.setProperty('--cvfs',e.target.value+'px'));
 });
+
+// art: weight + size sliders
+(function(){
+  const NAMES=['Thin','ExtraLight','Light','Regular','Medium','SemiBold','Bold','ExtraBold','Black'];
+  const WV=[100,200,300,400,500,600,700,800,900];
+  const aw=document.getElementById('aw'),as=document.getElementById('as');
+  function u(){
+    document.querySelectorAll('.art').forEach(p=>{p.style.fontWeight=WV[+aw.value];p.style.setProperty('--artfs',as.value+'px');});
+    document.getElementById('awn').textContent=NAMES[+aw.value];
+  }
+  [aw,as].forEach(e=>e.addEventListener('input',u)); u();
+})();
 
 // scroll reveal
 (function(){

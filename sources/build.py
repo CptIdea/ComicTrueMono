@@ -132,6 +132,85 @@ def paste_glyph(dst, src, cp, scale=1.0):
         g.transform(psMat.scale(scale, scale))   # scale about baseline; recenter fixes x
     recenter(g)
 
+# Comic Relief (OFL) is proportional; fit each imported glyph into the mono cell the same
+# way Comic Mono already condenses its own wide Latin (M->0.70, W->0.61 of the proportional
+# width). SCALE_CR matches cap/x-height; wide glyphs then get a horizontal-only squeeze so
+# their bbox fits MAXW (our own widest Latin sits ~1088, leaving small side bearings in 1116).
+SCALE_CR = 0.9657   # median H/X/O/o/x/n/b/d/p height ratio ours/Comic-Relief
+MAXW     = 1080     # max glyph bbox width kept inside CELL=1116
+STEM_TARGET_FRAC = 0.80   # condensed glyphs: restore vertical stem to this fraction of the median
+                          # native weight (kept below full weight because their tight counters
+                          # already read darker). The global lift below then tops everyone up.
+GLOBAL_LIFT = 14          # Comic Relief runs ~8% lighter than Comic Mono (Greek Ι stem 188 vs
+                          # Latin I 205); add this weight to every imported glyph, in BOTH axes,
+                          # so verticals AND horizontals match the Latin texture.
+# Native stroke weight of each Comic Relief Greek/Cyrillic glyph (precomputed by
+# sources/tools/measure_cr_stems.py -> cr-stems.json). Lets us know how much stem a wide
+# glyph loses to horizontal condensing, so we can add it back.
+_CRSTEMS   = json.load(open(ROOT + "/sources/tools/cr-stems.json"))
+CR_STEM     = {int(k): v for k, v in _CRSTEMS["stems"].items()}
+CR_STEM_MED = _CRSTEMS["median"]
+
+def embolden(g, dx, dy):
+    """All-directional weight: union the outline with an x-shifted and a y-shifted copy of
+    itself. Vertical strokes thicken by dx, horizontal strokes by dy. Grows the bbox by
+    (dx, dy) — callers re-fit width and clamp height afterwards."""
+    if dx < 1 and dy < 1:
+        return
+    layer = g.foreground.dup()
+    if dx >= 1:
+        sx = g.foreground.dup(); sx.transform(psMat.translate(dx, 0.0)); layer += sx
+    if dy >= 1:
+        sy = g.foreground.dup(); sy.transform(psMat.translate(0.0, dy)); layer += sy
+    g.foreground = layer
+    g.removeOverlap()
+    g.correctDirection()
+
+# A few Comic Relief caps are drawn taller than this family's tiny cap overshoot (~1%), so
+# they poke above the cap line. Bring just these round/pointed caps' top down to the cap line
+# (uniform vertical scale about the baseline). NOT applied to lowercase (legit ascenders),
+# accent marks (Й Ё Ў Ϊ Ϋ — meant to rise), or hook letters (Ґ — squishing the body is wrong).
+VCLAMP  = {0x0394, 0x03A9, 0x038F, 0x042E}   # Δ Ω Ώ Ю
+CAP_TOP = None                               # set from the master's 'H' before the import loop
+
+def clamp_top(g, cp):
+    if CAP_TOP is None or cp not in VCLAMP:
+        return
+    limit = CAP_TOP * 1.02
+    y1 = g.boundingBox()[3]
+    if y1 > limit:
+        g.transform(psMat.scale(1.0, limit / y1))   # about baseline: top -> cap line
+
+def paste_fit(dst, src, cp):
+    src.selection.select(("unicode", None), cp)
+    src.copy()
+    dst.createChar(cp)
+    dst.selection.select(("unicode", None), cp)
+    dst.paste()
+    g = dst[cp]
+    g.transform(psMat.scale(SCALE_CR, SCALE_CR))     # match cap/x-height to the family
+    x0, y0, x1, y1 = g.boundingBox()
+    w = x1 - x0
+    if w > MAXW:                                      # too wide: condense horizontally to fit
+        native = CR_STEM.get(cp, CR_STEM_MED) * SCALE_CR   # this glyph's own stem after uniform scale
+        target = CR_STEM_MED * SCALE_CR * STEM_TARGET_FRAC # uniform stem target for condensed glyphs
+        k = native / w
+        delta = (target - k * MAXW) / (1.0 - k) if k < 1.0 else 0.0
+        delta = max(0.0, min(delta, 90.0))                 # cap the compensation
+        g.transform(psMat.scale((MAXW - delta) / w, 1.0))  # leave room for the embolden
+        embolden(g, delta, 0)                              # restore ONLY the vertical stem the
+                                                           # x-squeeze thinned (horizontals were
+                                                           # untouched by it)
+    embolden(g, GLOBAL_LIFT, 0)                       # lift vertical weight to Comic Mono's (Comic
+                                                      # Relief runs lighter on stems but already has
+                                                      # heavier horizontals, so only the stems lift)
+    x0, y0, x1, y1 = g.boundingBox()                  # emboldening grew the bbox — refit the width
+    w2 = x1 - x0
+    if w2 > MAXW:
+        g.transform(psMat.scale(MAXW / w2, 1.0))
+    clamp_top(g, cp)                                  # pull over-tall caps down to the cap line
+    recenter(g)
+
 # Grid glyphs (Braille, box-drawing): keep the design cell in place — uniform scale,
 # NO recenter. Map ShannsMono's cell (src_cell @ em1000) exactly to CELL so lines tile.
 def paste_grid(dst, src, cp, src_cell=549):
@@ -174,6 +253,14 @@ def brand(font, style, wclass, italic):
     # WWS / typographic names so apps group all weights under one family.
     font.appendSFNTName("English (US)", "Preferred Family", FAMILY)
     font.appendSFNTName("English (US)", "Preferred Styles", name)
+    # Licensing (name IDs 0 / 13 / 14): fonts are OFL 1.1 because of the Comic Relief outlines.
+    font.appendSFNTName("English (US)", "Copyright",
+                        "Copyright 2026 The Comic True Mono Authors. "
+                        "Portions copyright 2013 The Comic Relief Project Authors.")
+    font.appendSFNTName("English (US)", "License",
+                        "This Font Software is licensed under the SIL Open Font License, "
+                        "Version 1.1. See OFL.txt or https://openfontlicense.org")
+    font.appendSFNTName("English (US)", "License URL", "https://openfontlicense.org")
     font.os2_weight = wclass
     font.italicangle = ITALIC_ANGLE if italic else 0
     bits = 0
@@ -196,8 +283,9 @@ lm = open_src(VENDOR+"/lilmayu-shanns2.ttf")
 gv = open_src(VENDOR+"/gb-ComicMono.ttf")
 sr = open_src(VENDOR+"/SeriousShanns-Regular.otf")   # source of L-stroke / l-stroke (kaBeech, MIT)
 sm = open_src(VENDOR+"/ComicShannsMono-Regular.ttf") # Braille source (jesusmgg, MIT)
+cr = open_src(VENDOR+"/ComicRelief-Regular.ttf")     # Greek + Cyrillic source (Loudifier, OFL 1.1)
 
-for src in (mc, lm, sr):        # flatten any composite references -> real contours
+for src in (mc, lm, sr, cr):    # flatten any composite references -> real contours
     src.selection.all()
     try: src.unlinkReferences()
     except Exception: pass
@@ -244,6 +332,21 @@ BR_T = psMat.compose(psMat.translate(-src_cx, -src_cy),
 for cp in braille:
     master[cp].transform(BR_T)
     master[cp].width = CELL
+
+# ---- Greek + Cyrillic from Comic Relief (OFL 1.1) ----
+# Modern monotonic Greek (U+0370-03FF) + Cyrillic (U+0400-04FF), fitted to the mono cell.
+# Skip codepoints already in the master (keeps the give-back lambda U+03BB, Comic Mono size).
+CAP_TOP = master["H"].boundingBox()[3]          # cap line, for clamp_top
+master_cps = {g.unicode for g in master.glyphs() if g.unicode and g.unicode > 0}
+cr_cps = {g.unicode for g in cr.glyphs() if g.unicode and g.unicode > 0}
+greek_cyr = sorted(cp for cp in cr_cps
+                   if (0x0370 <= cp <= 0x03FF or 0x0400 <= cp <= 0x04FF)
+                   and cp not in master_cps)
+for cp in greek_cyr:
+    paste_fit(master, cr, cp)
+n_greek = sum(1 for cp in greek_cyr if cp <= 0x03FF)
+n_cyr = len(greek_cyr) - n_greek
+print(f"   Comic Relief: +{n_greek} Greek, +{n_cyr} Cyrillic (fitted to mono)")
 
 # ---- Box drawing + block elements ----
 # Straight, connecting parts are clean rectangles (tile seamlessly, no rounded/slanted
@@ -326,7 +429,7 @@ for i,cp in enumerate([0x258F,0x258E,0x258D,0x258C,0x258B,0x258A,0x2589], start=
 nbox = len(_BOXJSON) + 3 + 19
 print(f"   added: {len(want)} range + 14 lilmayu + lambda + L-stroke + o/O-slash, middot"
       f" + {len(braille)} braille + box/blocks (light+heavy+double+rounded+diagonals+blocks)")
-for s in (mc, lm, gv, sr, sm): s.close()
+for s in (mc, lm, gv, sr, sm, cr): s.close()
 BUILDTMP = ROOT + "/sources/.cache"; os.makedirs(BUILDTMP, exist_ok=True)
 MASTER_PATH = BUILDTMP + "/_master-Regular.ttf"
 master.generate(MASTER_PATH)

@@ -1,37 +1,60 @@
-MIT License
+Comic True Mono — licensing
+Copyright (c) 2026 The Comic True Mono Authors
 
-Comic True Mono
-Modified work Copyright (c) 2026 Comic True Mono authors
+This project is licensed in two parts:
 
-This font is a derivative work. Its glyph outlines and build pipeline are based
-on the following projects, ALL of which are distributed under the MIT License.
-Per the MIT License terms, the copyright and permission notices below are
-retained for every upstream whose outlines are included in this font.
+  1. The FONTS (fonts/ttf/*.ttf, and the master they are generated from) are
+     licensed under the SIL Open Font License, Version 1.1 — see OFL.txt.
+     They incorporate outlines from Comic Relief, which is itself OFL 1.1, and
+     the OFL requires derivative fonts to stay under the OFL.
+
+  2. The BUILD SCRIPTS (everything under sources/, EXCEPT the vendored font
+     binaries in sources/vendor/) are licensed under the MIT License, printed
+     below. They contain no third-party outlines.
+
+--------------------------------------------------------------------------------
+Fonts this software is built from
+--------------------------------------------------------------------------------
+
+The font incorporates or is derived from the following projects. Their
+copyright and permission notices are retained here as required by their
+respective licenses.
+
+  Comic Relief
+    Copyright 2013 The Comic Relief Project Authors
+    https://github.com/loudifier/Comic-Relief          (SIL OFL 1.1)
+    — Cyrillic (U+0400–04FF) and Greek (U+0370–03FF), fitted to the mono cell.
+      Its OFL license is the reason the fonts ship under the OFL; see OFL.txt.
 
   Comic Shanns
     Original work Copyright (c) 2018 Shannon Miwa
-    https://github.com/shannpersand/comic-shanns   (MIT)
+    https://github.com/shannpersand/comic-shanns        (MIT)
     — root source of the letterforms; Latin, accented Latin (Latin-1 Supplement,
       Latin Extended-A/B), punctuation, arrows, currency, math operators.
 
   Comic Mono
     Modified work Copyright (c) 2019 dtinth
-    https://github.com/dtinth/comic-mono-font       (MIT)
+    https://github.com/dtinth/comic-mono-font           (MIT)
     — monospace base (Regular/Bold), advance width 1116 @ UPM 2048.
 
   Serious Shanns
     Modified work Copyright (c) 2023-2024 Kyle Beechly
-    https://github.com/kaBeech/serious-shanns        (MIT)
+    https://github.com/kaBeech/serious-shanns           (MIT)
     — source of the lambda glyph and the hand-drawn Italic / Bold Italic masters.
 
   comic-shanns (fork by clsn)
-    https://github.com/clsn/comic-shanns             (MIT)
+    https://github.com/clsn/comic-shanns                (MIT)
     — additional characters: Æ æ Œ œ Þ þ ſ ƿ Ƿ ꝛ ∀ ∃ ∄.
 
   comic-shanns (fork by lilmayu)
-    https://github.com/lilmayu/comic-shanns          (MIT)
+    https://github.com/lilmayu/comic-shanns             (MIT)
     — corrected caron/háček diacritics: Č č Ď Ě ě Ň ň Ř ř Š š Ť Ž ž and U+02C7.
 
+MIT permits including its material in an OFL work, so the MIT-licensed outlines
+above are redistributed within the OFL fonts with their notices retained.
+
+--------------------------------------------------------------------------------
+MIT License (build scripts, and the MIT-licensed upstream material above)
 --------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -51,11 +74,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
---------------------------------------------------------------------------------
-
-Note on the demos: the HTML specimens in fonts/*.html reference JetBrains Mono
-(fonts/fallback/) purely as a Cyrillic fallback for preview. JetBrains Mono is
-licensed under the SIL Open Font License 1.1 and is NOT embedded into any
-Comic True Mono output file — it is only used for on-screen preview. If the
-demos are redistributed with that file, include its OFL license.

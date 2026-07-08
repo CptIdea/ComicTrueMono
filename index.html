@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comic True Mono — a monospaced Comic Sans for code</title>
-<meta name="description" content="A free, MIT-licensed monospaced Comic Sans for code. 9 weights x italic, full European Latin, assembled from abandoned free forks.">
+<meta name="description" content="A free, OFL-licensed monospaced Comic Sans for code. 9 weights x italic, full European Latin, Cyrillic and Greek, assembled from scattered free forks.">
 <style>
 @font-face{font-family:CTM;font-weight:100;font-style:normal;font-display:swap;src:url("fonts/ttf/ComicTrueMono-Thin.ttf");}
 @font-face{font-family:CTM;font-weight:100;font-style:italic;font-display:swap;src:url("fonts/ttf/ComicTrueMono-ThinItalic.ttf");}
@@ -131,6 +131,27 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .plic{font-size:11px;font-family:CTM;padding:2px 8px;border-radius:999px}
 .plic.mit{color:var(--mit);background:color-mix(in srgb,var(--mit) 15%,transparent)}
 .plic.new{color:var(--new);background:color-mix(in srgb,var(--new) 16%,transparent)}
+.plic.ofl{color:var(--accent2);background:color-mix(in srgb,var(--accent2) 16%,transparent)}
+
+/* scripts (Cyrillic + Greek) */
+.scripts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:720px){ .scripts{grid-template-columns:1fr} }
+.scard{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:20px 22px;overflow:hidden}
+.scard .sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.scard .sh b{font-size:15px}
+.scard .sh .cnt{font-family:CTM;font-size:12px;color:var(--mut)}
+.scard .big{font-family:CTM;font-size:clamp(20px,3.4vw,30px);line-height:1.5;margin:0 0 8px;word-break:break-word}
+.scard .rows{font-family:CTM;font-size:clamp(15px,2.2vw,20px);line-height:1.8;color:var(--mut);margin:0;word-break:break-word}
+.scard .rows b{color:var(--fg);font-weight:400}
+
+/* why-not-MIT */
+.whymit{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:26px 26px 22px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px}
+.whymit p{max-width:70ch;margin:0 0 12px;font-size:15.5px}
+.whymit p:last-child{margin-bottom:0}
+.whymit .mono{color:var(--accent)}
+.whymit .kick{color:var(--mut);font-style:italic}
 .pwho{font-size:12px;color:var(--mut);margin-top:2px}
 .pdesc{font-size:14px;margin:9px 0 10px}
 .psample{font-family:CTM;font-size:22px;line-height:1.5;word-break:break-all;color:var(--fg)}
@@ -194,6 +215,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#type">Type</a>
     <a class="lnk" href="#weights">Weights</a>
     <a class="lnk" href="#glyphs">Glyphs</a>
+    <a class="lnk" href="#scripts">Cyrillic</a>
     <a class="lnk" href="#art">Art</a>
     <a class="lnk" href="#boxdraw">Box</a>
     <a class="lnk" href="#story">Story</a>
@@ -205,21 +227,23 @@ footer a{color:var(--accent);text-decoration:none}
 
 <header class="hero">
   <div class="wrap">
-    <div class="pill mono">MIT · free · monospaced</div>
+    <div class="pill mono">OFL · free · monospaced</div>
     <h1 class="htitle" id="htitle"><span class="hl" style="--i:0">C</span><span class="hl" style="--i:1">o</span><span class="hl" style="--i:2">m</span><span class="hl" style="--i:3">i</span><span class="hl" style="--i:4">c</span><span class="hsp"> </span><span class="hl" style="--i:6">T</span><span class="hl" style="--i:7">r</span><span class="hl" style="--i:8">u</span><span class="hl" style="--i:9">e</span><span class="hsp"> </span><span class="hl" style="--i:11">M</span><span class="hl" style="--i:12">o</span><span class="hl" style="--i:13">n</span><span class="hl" style="--i:14">o</span></h1>
-    <p class="htag">A monospaced <b>Comic Sans for code</b>, gathered from scattered forks and
-      years-old unmerged pull requests into one free, MIT-licensed family — <b>nine weights</b>,
-      italics, and full European Latin.</p>
+    <p class="htag">A gloriously <b>stitched-together Frankenfont</b> — one monospaced
+      <b>Comic Sans for code</b> welded from a dozen scattered Comic&nbsp;Sans-lineage fonts and their
+      years-old unmerged pull requests, so your terminal and IDE get the fullest Comic&nbsp;Sans
+      experience going. <b>Nine weights</b>, italics, full European Latin — now with
+      <b>Cyrillic and Greek</b>.</p>
     <div class="hbtns">
       <a class="btn pri" href="#get">Download</a>
       <a class="btn" href="https://github.com/CptIdea/ComicTrueMono" id="ghlink">GitHub ↗</a>
       <span class="pill mono">9 weights × italic</span>
     </div>
     <div class="stats mono">
-      <div class="stat"><b>716</b><span>glyphs</span></div>
+      <div class="stat"><b>881</b><span>glyphs</span></div>
       <div class="stat"><b>9×2</b><span>weights + italic</span></div>
-      <div class="stat"><b>1116</b><span>mono advance</span></div>
-      <div class="stat"><b>100%</b><span>MIT</span></div>
+      <div class="stat"><b>166</b><span>Cyrillic + Greek</span></div>
+      <div class="stat"><b>OFL</b><span>free forever</span></div>
     </div>
   </div>
 </header>
@@ -259,12 +283,23 @@ footer a{color:var(--accent);text-decoration:none}
 <section id="glyphs">
   <div class="wrap reveal">
     <div class="cvhead">
-      <div><p class="eyebrow">Coverage</p><h2 style="margin:0">716 glyphs, one width.</h2></div>
+      <div><p class="eyebrow">Coverage</p><h2 style="margin:0">881 glyphs, one width.</h2></div>
       <label class="note mono">size <input id="cvs" type="range" min="18" max="44" value="26" style="accent-color:var(--accent)"></label>
     </div>
     <p class="lead">Full European Latin, symbols, currency, arrows, math — laid over a one-cell grid.
       Every glyph fills exactly one column: that is what monospaced means.</p>
-    <div class="cvblk"><div class="cvhdr">Basic Latin<span>95</span></div><div class="cvglyphs"> !&quot;#$%&amp;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</div></div><div class="cvblk"><div class="cvhdr">Latin-1 Supplement<span>79</span></div><div class="cvglyphs">¡¢£¤¥¦¨«¬¯°±´·¸»¼¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖ×ØÙÚÛÜÝÞàáâãäåæçèéêëìíîïñòóôõö÷øùúûüýþÿ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-A<span>110</span></div><div class="cvglyphs">ĀāĂăĄąĆćĈĉĊċČčĎďĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĨĩĪīĬĭĮįİıĴĵĶķĹĺĻļŁłŃńŅņŇňŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-B<span>7</span></div><div class="cvglyphs">ƿǷȘșȚțȷ</div></div><div class="cvblk"><div class="cvhdr">Other<span>398</span></div><div class="cvglyphs">ˆˇ˘˙˚˛˜˝ẀẁẂẃẄẅỲỳ─━│┃┌┍┎┏┐┑┒┓└┕┖┗┘┙┚┛├┝┞┟┠┡┢┣┤┥┦┧┨┩┪┫┬┭┮┯┰┱┲┳┴┵┶┷┸┹┺┻┼┽┾┿╀╁╂╃╄╅╆╇╈╉╊╋═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬╭╮╯╰╱╲╳▀▁▂▃▄▅▆▇█▉▊▋▌▍▎▏▐░▒▓▔▕⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿⡀⡁⡂⡃⡄⡅⡆⡇⡈⡉⡊⡋⡌⡍⡎⡏⡐⡑⡒⡓⡔⡕⡖⡗⡘⡙⡚⡛⡜⡝⡞⡟⡠⡡⡢⡣⡤⡥⡦⡧⡨⡩⡪⡫⡬⡭⡮⡯⡰⡱⡲⡳⡴⡵⡶⡷⡸⡹⡺⡻⡼⡽⡾⡿⢀⢁⢂⢃⢄⢅⢆⢇⢈⢉⢊⢋⢌⢍⢎⢏⢐⢑⢒⢓⢔⢕⢖⢗⢘⢙⢚⢛⢜⢝⢞⢟⢠⢡⢢⢣⢤⢥⢦⢧⢨⢩⢪⢫⢬⢭⢮⢯⢰⢱⢲⢳⢴⢵⢶⢷⢸⢹⢺⢻⢼⢽⢾⢿⣀⣁⣂⣃⣄⣅⣆⣇⣈⣉⣊⣋⣌⣍⣎⣏⣐⣑⣒⣓⣔⣕⣖⣗⣘⣙⣚⣛⣜⣝⣞⣟⣠⣡⣢⣣⣤⣥⣦⣧⣨⣩⣪⣫⣬⣭⣮⣯⣰⣱⣲⣳⣴⣵⣶⣷⣸⣹⣺⣻⣼⣽⣾⣿</div></div><div class="cvblk"><div class="cvhdr">Greek<span>1</span></div><div class="cvglyphs">λ</div></div><div class="cvblk"><div class="cvhdr">Punctuation<span>14</span></div><div class="cvglyphs">–—‘’‚“”†‡•…‹›⁄</div></div><div class="cvblk"><div class="cvhdr">Currency<span>1</span></div><div class="cvglyphs">€</div></div><div class="cvblk"><div class="cvhdr">Arrows<span>4</span></div><div class="cvglyphs">←↑→↓</div></div><div class="cvblk"><div class="cvhdr">Math<span>6</span></div><div class="cvglyphs">∀∃∄−≤≥</div></div><div class="cvblk"><div class="cvhdr">Latin Ext-D<span>1</span></div><div class="cvglyphs">ꝛ</div></div>
+    <div class="cvblk"><div class="cvhdr">Basic Latin<span>95</span></div><div class="cvglyphs"> !&quot;#$%&amp;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</div></div><div class="cvblk"><div class="cvhdr">Latin-1 Supplement<span>79</span></div><div class="cvglyphs">¡¢£¤¥¦¨«¬¯°±´·¸»¼¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖ×ØÙÚÛÜÝÞàáâãäåæçèéêëìíîïñòóôõö÷øùúûüýþÿ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-A<span>110</span></div><div class="cvglyphs">ĀāĂăĄąĆćĈĉĊċČčĎďĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĨĩĪīĬĭĮįİıĴĵĶķĹĺĻļŁłŃńŅņŇňŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ</div></div><div class="cvblk"><div class="cvhdr">Latin Extended-B<span>7</span></div><div class="cvglyphs">ƿǷȘșȚțȷ</div></div><div class="cvblk"><div class="cvhdr">Other<span>398</span></div><div class="cvglyphs">ˆˇ˘˙˚˛˜˝ẀẁẂẃẄẅỲỳ─━│┃┌┍┎┏┐┑┒┓└┕┖┗┘┙┚┛├┝┞┟┠┡┢┣┤┥┦┧┨┩┪┫┬┭┮┯┰┱┲┳┴┵┶┷┸┹┺┻┼┽┾┿╀╁╂╃╄╅╆╇╈╉╊╋═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬╭╮╯╰╱╲╳▀▁▂▃▄▅▆▇█▉▊▋▌▍▎▏▐░▒▓▔▕⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿⡀⡁⡂⡃⡄⡅⡆⡇⡈⡉⡊⡋⡌⡍⡎⡏⡐⡑⡒⡓⡔⡕⡖⡗⡘⡙⡚⡛⡜⡝⡞⡟⡠⡡⡢⡣⡤⡥⡦⡧⡨⡩⡪⡫⡬⡭⡮⡯⡰⡱⡲⡳⡴⡵⡶⡷⡸⡹⡺⡻⡼⡽⡾⡿⢀⢁⢂⢃⢄⢅⢆⢇⢈⢉⢊⢋⢌⢍⢎⢏⢐⢑⢒⢓⢔⢕⢖⢗⢘⢙⢚⢛⢜⢝⢞⢟⢠⢡⢢⢣⢤⢥⢦⢧⢨⢩⢪⢫⢬⢭⢮⢯⢰⢱⢲⢳⢴⢵⢶⢷⢸⢹⢺⢻⢼⢽⢾⢿⣀⣁⣂⣃⣄⣅⣆⣇⣈⣉⣊⣋⣌⣍⣎⣏⣐⣑⣒⣓⣔⣕⣖⣗⣘⣙⣚⣛⣜⣝⣞⣟⣠⣡⣢⣣⣤⣥⣦⣧⣨⣩⣪⣫⣬⣭⣮⣯⣰⣱⣲⣳⣴⣵⣶⣷⣸⣹⣺⣻⣼⣽⣾⣿</div></div><div class="cvblk"><div class="cvhdr">Greek<span>72</span></div><div class="cvglyphs">΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ</div></div><div class="cvblk"><div class="cvhdr">Cyrillic<span>94</span></div><div class="cvglyphs">ЁЂЃЄЅІЇЈЉЊЋЌЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяёђѓєѕіїјљњћќўџҐґ</div></div><div class="cvblk"><div class="cvhdr">Punctuation<span>14</span></div><div class="cvglyphs">–—‘’‚“”†‡•…‹›⁄</div></div><div class="cvblk"><div class="cvhdr">Currency<span>1</span></div><div class="cvglyphs">€</div></div><div class="cvblk"><div class="cvhdr">Arrows<span>4</span></div><div class="cvglyphs">←↑→↓</div></div><div class="cvblk"><div class="cvhdr">Math<span>6</span></div><div class="cvglyphs">∀∃∄−≤≥</div></div><div class="cvblk"><div class="cvhdr">Latin Ext-D<span>1</span></div><div class="cvglyphs">ꝛ</div></div>
+  </div>
+</section>
+
+<section id="scripts">
+  <div class="wrap reveal">
+    <p class="eyebrow">Cyrillic &amp; Greek</p>
+    <h2>Now it speaks Russian. And Greek.</h2>
+    <p class="lead">The whole point of the project: a <b>free monospaced Comic Sans with Cyrillic</b>
+      simply did not exist. Now it does — plus a full monotonic Greek — drawn to the same weight and the
+      same 1116-unit cell as the Latin, so code, comments and commit messages share one voice.</p>
+    <div class="scripts"><div class="scard"><div class="sh"><b>Cyrillic</b><span class="cnt">94 glyphs · RU · UA · BY</span></div><p class="big">Съешь же ещё этих мягких<br>французских булок, да выпей чаю.</p><p class="rows"><b>абвгдеёжзийклмнопрстуфхцчшщъыьэюя</b><br>АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ<br>Ґ ґ Є є І і Ї ї Ў ў · Ђ Ѓ Ѕ Ј Љ Њ Ћ Ќ Џ</p></div><div class="scard"><div class="sh"><b>Greek</b><span class="cnt">72 glyphs · monotonic</span></div><p class="big">Ξεσκεπάζω την ψυχοφθόρα<br>βδελυγμία. Γειά σου, κόσμε!</p><p class="rows"><b>αβγδεζηθικλμνξοπρστυφχψω ς</b><br>ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ<br>ά έ ή ί ό ύ ώ · ϊ ϋ ΐ ΰ · Ά Έ Ή Ί Ό Ύ Ώ</p></div></div>
   </div>
 </section>
 
@@ -353,8 +388,8 @@ footer a{color:var(--accent);text-decoration:none}
     <p class="lead">Good contributions to the free monospaced Comic Sans forks sat unmerged for years —
       the original Comic Shanns went quiet in 2023, and even the maintained repos still ignore font PRs
       (kaBeech's italics have been open since 2024). Comic True Mono gathers that scattered work into one
-      place — every glyph from an MIT source — and constructs the few that existed nowhere.</p>
-    <div class="pgrid"><div class="pcard"><div class="ptop"><span class="pname">Comic Mono</span><span class="plic mit">MIT</span></div><div class="pwho">dtinth</div><div class="pdesc">The monospaced base — clean 1116-unit metric.</div><div class="psample">ABCDEFGHIJKLMNOPQRSTUVWXYZ a b c 0 1 2</div></div><div class="pcard"><div class="ptop"><span class="pname">Comic Shanns</span><span class="plic mit">MIT</span></div><div class="pwho">Shannon Miwa</div><div class="pdesc">The root letterforms + full European Latin.</div><div class="psample">À Ç É Ñ Ö Ü ā ć đ ģ ķ ł ń ő ř š ž</div></div><div class="pcard"><div class="ptop"><span class="pname">Serious Shanns</span><span class="plic mit">MIT</span></div><div class="pwho">kaBeech</div><div class="pdesc">The λ glyph, hand-drawn italics, and Ł ł.</div><div class="psample">λ Ł ł  f g k x  (italic)</div></div><div class="pcard"><div class="ptop"><span class="pname">clsn fork</span><span class="plic mit">MIT</span></div><div class="pwho">clsn — PR open since 2021</div><div class="pdesc">Ligatures &amp; rare letters nobody merged.</div><div class="psample">Æ æ Œ œ Þ þ ſ ƿ Ƿ ꝛ ∀ ∃ ∄</div></div><div class="pcard"><div class="ptop"><span class="pname">lilmayu fork</span><span class="plic mit">MIT</span></div><div class="pwho">lilmayu — PR open since 2022</div><div class="pdesc">Correctly rotated caron / háček.</div><div class="psample">Č č Ě ě Ř ř Š š Ž ž ˇ</div></div><div class="pcard"><div class="ptop"><span class="pname">In-project</span><span class="plic new">new</span></div><div class="pwho">constructed here</div><div class="pdesc">Absent from every source — built by hand.</div><div class="psample">ø Ø ·</div></div></div>
+      place — every glyph from a free, redistributable source — and constructs the few that existed nowhere.</p>
+    <div class="pgrid"><div class="pcard"><div class="ptop"><span class="pname">Comic Mono</span><span class="plic mit">MIT</span></div><div class="pwho">dtinth</div><div class="pdesc">The monospaced base — clean 1116-unit metric.</div><div class="psample">ABCDEFGHIJKLMNOPQRSTUVWXYZ a b c 0 1 2</div></div><div class="pcard"><div class="ptop"><span class="pname">Comic Shanns</span><span class="plic mit">MIT</span></div><div class="pwho">Shannon Miwa</div><div class="pdesc">The root letterforms + full European Latin.</div><div class="psample">À Ç É Ñ Ö Ü ā ć đ ģ ķ ł ń ő ř š ž</div></div><div class="pcard"><div class="ptop"><span class="pname">Serious Shanns</span><span class="plic mit">MIT</span></div><div class="pwho">kaBeech</div><div class="pdesc">The λ glyph, hand-drawn italics, and Ł ł.</div><div class="psample">λ Ł ł  f g k x  (italic)</div></div><div class="pcard"><div class="ptop"><span class="pname">clsn fork</span><span class="plic mit">MIT</span></div><div class="pwho">clsn — PR open since 2021</div><div class="pdesc">Ligatures &amp; rare letters nobody merged.</div><div class="psample">Æ æ Œ œ Þ þ ſ ƿ Ƿ ꝛ ∀ ∃ ∄</div></div><div class="pcard"><div class="ptop"><span class="pname">lilmayu fork</span><span class="plic mit">MIT</span></div><div class="pwho">lilmayu — PR open since 2022</div><div class="pdesc">Correctly rotated caron / háček.</div><div class="psample">Č č Ě ě Ř ř Š š Ž ž ˇ</div></div><div class="pcard"><div class="ptop"><span class="pname">Comic Relief</span><span class="plic ofl">OFL</span></div><div class="pwho">Loudifier / Jeff Davis</div><div class="pdesc">Cyrillic + Greek — the whole reason for the license switch.</div><div class="psample">Я Ж Щ ю λ π Ω  Привет  Γειά</div></div><div class="pcard"><div class="ptop"><span class="pname">In-project</span><span class="plic new">new</span></div><div class="pwho">constructed here</div><div class="pdesc">Absent from every source — built by hand.</div><div class="psample">ø Ø ·</div></div></div>
   </div>
 </section>
 
@@ -365,7 +400,7 @@ footer a{color:var(--accent);text-decoration:none}
     <p class="lead">Folding every scattered fork into one file pays off in coverage: Comic True Mono
       carries a wider character set than any free monospaced Comic Sans. The bars below <i>are</i> its
       own sources — each measured glyph-for-glyph, straight from the font.</p>
-    <div class="chart" id="cchart"><div class="crow"><div class="clab"><b>Serious Shanns</b><span>kaBeech</span></div><div class="ctrack"><div class="cbar" data-pct="13.7" style="width:0"></div></div><span class="cnum" data-n="98">0</span></div><div class="crow"><div class="clab"><b>Comic Mono</b><span>dtinth · the base</span></div><div class="ctrack"><div class="cbar" data-pct="14.4" style="width:0"></div></div><span class="cnum" data-n="103">0</span></div><div class="crow"><div class="clab"><b>Comic Shanns v2</b><span>Shannon Miwa</span></div><div class="ctrack"><div class="cbar" data-pct="44.1" style="width:0"></div></div><span class="cnum" data-n="316">0</span></div><div class="crow"><div class="clab"><b>clsn fork</b><span>clsn · PR unmerged</span></div><div class="ctrack"><div class="cbar" data-pct="83.8" style="width:0"></div></div><span class="cnum" data-n="600">0</span></div><div class="crow"><div class="clab"><b>Comic Shanns Mono</b><span>jesusmgg</span></div><div class="ctrack"><div class="cbar" data-pct="85.6" style="width:0"></div></div><span class="cnum" data-n="613">0</span></div><div class="crow"><div class="clab"><b>Comic True Mono</b><span>assembled here</span></div><div class="ctrack"><div class="cbar win" data-pct="100.0" style="width:0"></div><span class="ctag">★ richest free set</span></div><span class="cnum win" data-n="716">0</span></div></div>
+    <div class="chart" id="cchart"><div class="crow"><div class="clab"><b>Serious Shanns</b><span>kaBeech</span></div><div class="ctrack"><div class="cbar" data-pct="11.1" style="width:0"></div></div><span class="cnum" data-n="98">0</span></div><div class="crow"><div class="clab"><b>Comic Mono</b><span>dtinth · the base</span></div><div class="ctrack"><div class="cbar" data-pct="11.7" style="width:0"></div></div><span class="cnum" data-n="103">0</span></div><div class="crow"><div class="clab"><b>Comic Shanns v2</b><span>Shannon Miwa</span></div><div class="ctrack"><div class="cbar" data-pct="35.9" style="width:0"></div></div><span class="cnum" data-n="316">0</span></div><div class="crow"><div class="clab"><b>clsn fork</b><span>clsn · PR unmerged</span></div><div class="ctrack"><div class="cbar" data-pct="68.1" style="width:0"></div></div><span class="cnum" data-n="600">0</span></div><div class="crow"><div class="clab"><b>Comic Shanns Mono</b><span>jesusmgg</span></div><div class="ctrack"><div class="cbar" data-pct="69.6" style="width:0"></div></div><span class="cnum" data-n="613">0</span></div><div class="crow"><div class="clab"><b>Comic True Mono</b><span>assembled here</span></div><div class="ctrack"><div class="cbar win" data-pct="100.0" style="width:0"></div><span class="ctag">★ richest free set</span></div><span class="cnum win" data-n="881">0</span></div></div>
     <p class="ccap">Glyph counts read live from every font's <span class="mono">cmap</span> table with
       fontTools — never hand-typed — and each source ships in <span class="mono">sources/vendor/</span>.
       The only richer option is the paid, closed-source Comic&nbsp;Code.</p>
@@ -393,13 +428,31 @@ make            # build fonts + specimens</pre>
   </div>
 </section>
 
+<section id="license">
+  <div class="wrap reveal">
+    <p class="eyebrow">The fine print</p>
+    <h2>Why it's OFL.</h2>
+    <div class="whymit">
+      <p>No philosophy here — it just shook out this way. Every glyph used to come from an
+        <b>MIT</b> source, not on principle but because that's simply what the free Comic&nbsp;Sans
+        forks happened to be.</p>
+      <p>Then the font needed Cyrillic and Greek, and the only free, comic-styled set of those lives
+        in one place: <span class="mono">Comic Relief</span>, which is <b>OFL</b>. The license is
+        contagious — build on its outlines and your font ships under it too.</p>
+      <p>So the fonts are <b>OFL&nbsp;1.1</b>. The build scripts stay MIT, since they hold no outlines
+        but their own.</p>
+      <p class="kick">That's the whole story — nobody here was guarding a license.</p>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
-    <b class="mono">Comic True Mono</b> · MIT.
+    <b class="mono">Comic True Mono</b> · fonts under <a href="OFL.txt">SIL OFL 1.1</a>, build scripts MIT.
     Built on Comic Mono (dtinth), Comic Shanns (Shannon Miwa), Serious Shanns (kaBeech),
-    and the clsn &amp; lilmayu forks — all MIT.
+    the clsn &amp; lilmayu forks (all MIT), and Comic Relief (Loudifier, OFL) for Cyrillic &amp; Greek.
     Constructed in-project: ø Ø ·.
-    <br>See <a href="LICENSE">LICENSE</a> and <a href="RESEARCH.md">RESEARCH.md</a>.
+    <br>See <a href="LICENSE">LICENSE</a>.
   </div>
 </footer>
 

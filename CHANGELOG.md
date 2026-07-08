@@ -1,8 +1,14 @@
 # Changelog
 
-## Unreleased
+## v1.1.0 — 2026-07-08
 
 ### Added
+- **Cyrillic (94: Russian + Ukrainian/Belarusian) and Greek (72, monotonic)**, imported from
+  Comic Relief and fitted to the mono cell: uniform cap/x-height scale, per-glyph horizontal
+  condensing for wide glyphs, and vertical-stem compensation so condensed letters keep an even
+  weight. A global vertical lift matches Comic Relief's lighter stems to Comic Mono. Over-tall
+  round/pointed caps (Δ Ω Ю) are pulled down to the cap line. This finally delivers the project's
+  founding goal — a free monospaced Comic Sans with Cyrillic.
 - Full weight range: 9 weights (Thin → Black) × upright + italic, all auto-generated
   from a single Regular master.
 - Bold calibrated to the real Comic Mono Bold stem thickness (+32, stem 194 → 226).
@@ -24,5 +30,12 @@
 - HTML specimens: showcase, weight/bold comparison, coverage grid, base-font comparison,
   community-harvest demo.
 
+### Changed
+- **License: MIT → SIL OFL 1.1 for the fonts.** The Cyrillic/Greek source (Comic Relief) is
+  OFL, and the OFL requires derivative fonts to stay OFL. Build scripts remain MIT. Font name
+  tables now carry the OFL notice; see `OFL.txt` and `LICENSE`.
+
 ### Known gaps
 - German eszett (ß, ẞ) — absent from all sources; to be commissioned.
+- Comic Relief's horizontal strokes are natively heavier than Comic Mono's (~+15%); left as a
+  source trait for now.

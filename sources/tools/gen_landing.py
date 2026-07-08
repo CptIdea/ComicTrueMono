@@ -36,7 +36,7 @@ def block(cp):
     r = [(0x00,0x80,"Basic Latin"),(0x80,0x100,"Latin-1 Supplement"),(0x100,0x180,"Latin Extended-A"),
          (0x180,0x250,"Latin Extended-B"),(0x2000,0x2070,"Punctuation"),(0x20A0,0x20D0,"Currency"),
          (0x2100,0x2150,"Letterlike"),(0x2190,0x2200,"Arrows"),(0x2200,0x2300,"Math"),(0x370,0x400,"Greek"),
-         (0xA720,0xA800,"Latin Ext-D")]
+         (0x400,0x500,"Cyrillic"),(0xA720,0xA800,"Latin Ext-D")]
     for a,b,name in r:
         if a<=cp<b: return name
     return "Other"
@@ -64,12 +64,14 @@ STORY = [
      "Æ æ Œ œ Þ þ ſ ƿ Ƿ ꝛ ∀ ∃ ∄"),
     ("lilmayu fork", "lilmayu — PR open since 2022", "MIT", "Correctly rotated caron / háček.",
      "Č č Ě ě Ř ř Š š Ž ž ˇ"),
+    ("Comic Relief", "Loudifier / Jeff Davis", "OFL", "Cyrillic + Greek — the whole reason for the license switch.",
+     "Я Ж Щ ю λ π Ω  Привет  Γειά"),
     ("In-project", "constructed here", "new", "Absent from every source — built by hand.",
      "ø Ø ·"),
 ]
 PROV = ""
 for name, who, lic, desc, sample in STORY:
-    liccls = "new" if lic == "new" else "mit"
+    liccls = {"new": "new", "OFL": "ofl"}.get(lic, "mit")
     PROV += (f'<div class="pcard"><div class="ptop"><span class="pname">{html.escape(name)}</span>'
              f'<span class="plic {liccls}">{html.escape(lic)}</span></div>'
              f'<div class="pwho">{html.escape(who)}</div>'
@@ -108,6 +110,26 @@ HERO_LETTERS = "".join(
     for i, ch in enumerate("Comic True Mono"))
 
 TOTAL = len(cm)
+CYR_N = sum(1 for c in cm if 0x400 <= c <= 0x4FF)
+GK_N  = sum(1 for c in cm if 0x370 <= c <= 0x3FF)
+
+# ---- Cyrillic + Greek showcase ----
+SCRIPTS = (
+    '<div class="scard">'
+    '<div class="sh"><b>Cyrillic</b><span class="cnt">' + str(CYR_N) + ' glyphs · RU · UA · BY</span></div>'
+    '<p class="big">Съешь же ещё этих мягких<br>французских булок, да выпей чаю.</p>'
+    '<p class="rows"><b>абвгдеёжзийклмнопрстуфхцчшщъыьэюя</b><br>'
+    'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ<br>'
+    'Ґ ґ Є є І і Ї ї Ў ў · Ђ Ѓ Ѕ Ј Љ Њ Ћ Ќ Џ</p>'
+    '</div>'
+    '<div class="scard">'
+    '<div class="sh"><b>Greek</b><span class="cnt">' + str(GK_N) + ' glyphs · monotonic</span></div>'
+    '<p class="big">Ξεσκεπάζω την ψυχοφθόρα<br>βδελυγμία. Γειά σου, κόσμε!</p>'
+    '<p class="rows"><b>αβγδεζηθικλμνξοπρστυφχψω ς</b><br>'
+    'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ<br>'
+    'ά έ ή ί ό ύ ώ · ϊ ϋ ΐ ΰ · Ά Έ Ή Ί Ό Ύ Ώ</p>'
+    '</div>'
+)
 
 # ---- glyph-count comparison chart ----
 # Numbers are measured live from each source font's cmap (fontTools), never hand-typed,
@@ -147,7 +169,7 @@ TPL = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comic True Mono — a monospaced Comic Sans for code</title>
-<meta name="description" content="A free, MIT-licensed monospaced Comic Sans for code. 9 weights x italic, full European Latin, assembled from abandoned free forks.">
+<meta name="description" content="A free, OFL-licensed monospaced Comic Sans for code. 9 weights x italic, full European Latin, Cyrillic and Greek, assembled from scattered free forks.">
 <style>
 __FACES__
 :root{
@@ -258,6 +280,27 @@ h2{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.02em}
 .plic{font-size:11px;font-family:CTM;padding:2px 8px;border-radius:999px}
 .plic.mit{color:var(--mit);background:color-mix(in srgb,var(--mit) 15%,transparent)}
 .plic.new{color:var(--new);background:color-mix(in srgb,var(--new) 16%,transparent)}
+.plic.ofl{color:var(--accent2);background:color-mix(in srgb,var(--accent2) 16%,transparent)}
+
+/* scripts (Cyrillic + Greek) */
+.scripts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:720px){ .scripts{grid-template-columns:1fr} }
+.scard{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:20px 22px;overflow:hidden}
+.scard .sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.scard .sh b{font-size:15px}
+.scard .sh .cnt{font-family:CTM;font-size:12px;color:var(--mut)}
+.scard .big{font-family:CTM;font-size:clamp(20px,3.4vw,30px);line-height:1.5;margin:0 0 8px;word-break:break-word}
+.scard .rows{font-family:CTM;font-size:clamp(15px,2.2vw,20px);line-height:1.8;color:var(--mut);margin:0;word-break:break-word}
+.scard .rows b{color:var(--fg);font-weight:400}
+
+/* why-not-MIT */
+.whymit{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:26px 26px 22px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px}
+.whymit p{max-width:70ch;margin:0 0 12px;font-size:15.5px}
+.whymit p:last-child{margin-bottom:0}
+.whymit .mono{color:var(--accent)}
+.whymit .kick{color:var(--mut);font-style:italic}
 .pwho{font-size:12px;color:var(--mut);margin-top:2px}
 .pdesc{font-size:14px;margin:9px 0 10px}
 .psample{font-family:CTM;font-size:22px;line-height:1.5;word-break:break-all;color:var(--fg)}
@@ -321,6 +364,7 @@ footer a{color:var(--accent);text-decoration:none}
     <a class="lnk" href="#type">Type</a>
     <a class="lnk" href="#weights">Weights</a>
     <a class="lnk" href="#glyphs">Glyphs</a>
+    <a class="lnk" href="#scripts">Cyrillic</a>
     <a class="lnk" href="#art">Art</a>
     <a class="lnk" href="#boxdraw">Box</a>
     <a class="lnk" href="#story">Story</a>
@@ -332,11 +376,13 @@ footer a{color:var(--accent);text-decoration:none}
 
 <header class="hero">
   <div class="wrap">
-    <div class="pill mono">MIT · free · monospaced</div>
+    <div class="pill mono">OFL · free · monospaced</div>
     <h1 class="htitle" id="htitle">__HERO__</h1>
-    <p class="htag">A monospaced <b>Comic Sans for code</b>, gathered from scattered forks and
-      years-old unmerged pull requests into one free, MIT-licensed family — <b>nine weights</b>,
-      italics, and full European Latin.</p>
+    <p class="htag">A gloriously <b>stitched-together Frankenfont</b> — one monospaced
+      <b>Comic Sans for code</b> welded from a dozen scattered Comic&nbsp;Sans-lineage fonts and their
+      years-old unmerged pull requests, so your terminal and IDE get the fullest Comic&nbsp;Sans
+      experience going. <b>Nine weights</b>, italics, full European Latin — now with
+      <b>Cyrillic and Greek</b>.</p>
     <div class="hbtns">
       <a class="btn pri" href="#get">Download</a>
       <a class="btn" href="https://github.com/CptIdea/ComicTrueMono" id="ghlink">GitHub ↗</a>
@@ -345,8 +391,8 @@ footer a{color:var(--accent);text-decoration:none}
     <div class="stats mono">
       <div class="stat"><b>__TOTAL__</b><span>glyphs</span></div>
       <div class="stat"><b>9×2</b><span>weights + italic</span></div>
-      <div class="stat"><b>1116</b><span>mono advance</span></div>
-      <div class="stat"><b>100%</b><span>MIT</span></div>
+      <div class="stat"><b>__CYRGK__</b><span>Cyrillic + Greek</span></div>
+      <div class="stat"><b>OFL</b><span>free forever</span></div>
     </div>
   </div>
 </header>
@@ -395,6 +441,17 @@ footer a{color:var(--accent);text-decoration:none}
   </div>
 </section>
 
+<section id="scripts">
+  <div class="wrap reveal">
+    <p class="eyebrow">Cyrillic &amp; Greek</p>
+    <h2>Now it speaks Russian. And Greek.</h2>
+    <p class="lead">The whole point of the project: a <b>free monospaced Comic Sans with Cyrillic</b>
+      simply did not exist. Now it does — plus a full monotonic Greek — drawn to the same weight and the
+      same 1116-unit cell as the Latin, so code, comments and commit messages share one voice.</p>
+    <div class="scripts">__SCRIPTS__</div>
+  </div>
+</section>
+
 <section id="art">
   <div class="wrap reveal">
     <p class="eyebrow">Bonus</p>
@@ -426,7 +483,7 @@ footer a{color:var(--accent);text-decoration:none}
     <p class="lead">Good contributions to the free monospaced Comic Sans forks sat unmerged for years —
       the original Comic Shanns went quiet in 2023, and even the maintained repos still ignore font PRs
       (kaBeech's italics have been open since 2024). Comic True Mono gathers that scattered work into one
-      place — every glyph from an MIT source — and constructs the few that existed nowhere.</p>
+      place — every glyph from a free, redistributable source — and constructs the few that existed nowhere.</p>
     <div class="pgrid">__PROV__</div>
   </div>
 </section>
@@ -466,13 +523,31 @@ make            # build fonts + specimens</pre>
   </div>
 </section>
 
+<section id="license">
+  <div class="wrap reveal">
+    <p class="eyebrow">The fine print</p>
+    <h2>Why it's OFL.</h2>
+    <div class="whymit">
+      <p>No philosophy here — it just shook out this way. Every glyph used to come from an
+        <b>MIT</b> source, not on principle but because that's simply what the free Comic&nbsp;Sans
+        forks happened to be.</p>
+      <p>Then the font needed Cyrillic and Greek, and the only free, comic-styled set of those lives
+        in one place: <span class="mono">Comic Relief</span>, which is <b>OFL</b>. The license is
+        contagious — build on its outlines and your font ships under it too.</p>
+      <p>So the fonts are <b>OFL&nbsp;1.1</b>. The build scripts stay MIT, since they hold no outlines
+        but their own.</p>
+      <p class="kick">That's the whole story — nobody here was guarding a license.</p>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
-    <b class="mono">Comic True Mono</b> · MIT.
+    <b class="mono">Comic True Mono</b> · fonts under <a href="OFL.txt">SIL OFL 1.1</a>, build scripts MIT.
     Built on Comic Mono (dtinth), Comic Shanns (Shannon Miwa), Serious Shanns (kaBeech),
-    and the clsn &amp; lilmayu forks — all MIT.
+    the clsn &amp; lilmayu forks (all MIT), and Comic Relief (Loudifier, OFL) for Cyrillic &amp; Greek.
     Constructed in-project: ø Ø ·.
-    <br>See <a href="LICENSE">LICENSE</a> and <a href="RESEARCH.md">RESEARCH.md</a>.
+    <br>See <a href="LICENSE">LICENSE</a>.
   </div>
 </footer>
 
@@ -588,6 +663,7 @@ out = (TPL.replace("__FACES__", FACES).replace("__HERO__", HERO_LETTERS)
           .replace("__COVERAGE__", COVERAGE).replace("__PROV__", PROV)
           .replace("__CHART__", CHART)
           .replace("__ARTB__", ARTB).replace("__ARTA__", ARTA)
-          .replace("__BOXTABLE__", BOXTABLE))
+          .replace("__BOXTABLE__", BOXTABLE)
+          .replace("__SCRIPTS__", SCRIPTS).replace("__CYRGK__", str(CYR_N + GK_N)))
 open(OUT, "w").write(out)
 print("index.html:", TOTAL, "glyphs,", len(order), "coverage blocks,", len(STORY), "story cards")

@@ -59,7 +59,7 @@ jobs:
           zip="ComicTrueMono-${tag}.zip"
           mkdir -p "dist/${dir}"
           cp fonts/ttf/ComicTrueMono-*.ttf "dist/${dir}/"
-          cp LICENSE README.md "dist/${dir}/"
+          cp LICENSE OFL.txt README.md "dist/${dir}/"
           (cd dist && zip -r "../${zip}" "${dir}")
           echo "zip=${zip}" >> "$GITHUB_OUTPUT"
           ls -la "${zip}"
